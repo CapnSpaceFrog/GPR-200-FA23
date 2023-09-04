@@ -74,17 +74,24 @@ int main()
 	{
 		glfwPollEvents();
 
+		//CLEAR BACK BUFFER AND RESET COLOR
 		glClearColor(0.3f, 0.4f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		//SET SHADER AS ACTIVE
 		basicShader.MakeActive();
+		//SET UNIFORM VALUE TO TIME
 		basicShader.SetUniform1f("uTime", glfwGetTime());
+		//BIND VAO AS ACTIVE
 		glBindVertexArray(VAO);
+		//DRAW CALL TO OPEN GL
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
+		//SWAP THE BACK AND FRONT BUFFER
 		glfwSwapBuffers(window);
 	}
 
+	//DELETE DATA AS APPLICATION CLOSES
 	printf("Shutting down...");
 
 	glDeleteVertexArrays(1, &VAO);

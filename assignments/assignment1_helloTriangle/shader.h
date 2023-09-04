@@ -12,6 +12,7 @@ public:
 
 	void SetUniform1f(const char* name, float value);
 
+	//Stub functions that are not used yet
 	void AttachShader();
 	void DetatchShader();
 

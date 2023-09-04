@@ -5,6 +5,9 @@
 #include <fstream>
 #include <sstream>
 
+//Read shader source code from file, compile, then test compilation
+//Create a shader program and attach vert and frag shaders then link together & check for errors
+//Delete shaders after linked and compiled as they are no longer needed
 Shader::Shader(const char* vertSourcePath, const char* fragSourcePath)
 {
 	//READ FROM FILE
@@ -77,21 +80,25 @@ Shader::Shader(const char* vertSourcePath, const char* fragSourcePath)
 	glDeleteShader(fragShaderID);
 }
 
+//Generic accessor function to set a float value
 void Shader::SetUniform1f(const char* name, float value)
 {
 	glUniform1f(glGetUniformLocation(programID, name), value);
 }
 
+//Make this shader program the active shader when draw call is made
 void Shader::MakeActive()
 {
 	glUseProgram(programID);
 }
 
+//Delete the shader program when application closes
 void Shader::Delete()
 {
 	glDeleteProgram(programID);
 }
 
+//Stub function
 Shader::~Shader()
 {
 
