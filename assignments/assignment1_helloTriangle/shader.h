@@ -1,14 +1,16 @@
 #ifndef SHADER_CLASS
 #define SHADER_CLASS
 
-#include <string>
-
 class Shader
 {
 public:
+	unsigned int programID;
+
 	Shader();
 
-	Shader(std::string vertSourcePath, std::string fragSourcePath);
+	Shader(const char* vertSourcePath, const char* fragSourcePath);
+
+	void SetUniform1f(const char* name, float value);
 
 	void AttachShader();
 	void DetatchShader();
@@ -19,7 +21,7 @@ public:
 	~Shader();
 
 private:
-	unsigned int programID;
+	
 	unsigned int vertShaderID;
 	unsigned int fragShaderID;
 };

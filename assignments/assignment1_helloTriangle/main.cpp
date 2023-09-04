@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include <ew/external/glad.h>
 #include <ew/ewMath/ewMath.h>
@@ -19,13 +21,16 @@
 const int SCREEN_WIDTH = 1080;
 const int SCREEN_HEIGHT = 720;
 
+std::string vertFilePath = "Shaders/BasicVertex.vert";
+std::string fragFilePath = "Shaders/BasicFrag.frag";
+
 float vertices[] =
 {
 	//Model Coordinates			//Color
 	//x		//y		//z		//R		//G		//B
-	0.0f,		0.5f,		0.0f,		0.0f,		0.0f,		0.0f, //Top Center
-	-0.5f,	-0.5f,	0.0f,		0.0f,		0.0f,		0.0f, //Bottom Left
-	0.5f,		-0.5f,	0.0f,		0.0f,		0.0f,		0.0f,	//Bottom Right
+	0.0f,		0.5f,		0.0f,		1.0f,		0.0f,		0.0f, //Top Center
+	-0.5f,	-0.5f,	0.0f,		0.0f,		1.0f,		0.0f, //Bottom Left
+	0.5f,		-0.5f,	0.0f,		0.0f,		0.0f,		1.0f,	//Bottom Right
 };
 
 int main()
@@ -55,28 +60,15 @@ int main()
 		return 1;
 	}
 
-	//VAO
-	//unsigned int VAO = generateVAO(vertices, 3);
-	//VAO
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-
-	//VERTEX ATTRIBUTES
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	
-
+	//VBO & VAO GENERATION AND BIND
 	unsigned int VBO;
 	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	unsigned int VAO = generateVAO(vertices, 18, VBO);
 
 	//SHADER PROGRAM & UNIFORM ASSIGNMENT
-	Shader basicShader("Shaders/BasicVertex.vert", "Shaders/BasicFrag.frag");
-
+	Shader basicShader(vertFilePath.c_str(), fragFilePath.c_str());
+	
 	//RENDER LOOP
 	while (!glfwWindowShouldClose(window))
 	{
@@ -86,7 +78,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		basicShader.MakeActive();
-		//basicShader.MakeActive();
+		basicShader.SetUniform1f("uTime", glfwGetTime());
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -96,7 +88,7 @@ int main()
 	printf("Shutting down...");
 
 	glDeleteVertexArrays(1, &VAO);
-	//glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &VBO);
 	basicShader.Delete();
 	glfwTerminate();
 	return 0;
