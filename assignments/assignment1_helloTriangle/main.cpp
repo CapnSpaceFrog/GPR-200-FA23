@@ -21,8 +21,8 @@
 const int SCREEN_WIDTH = 1080;
 const int SCREEN_HEIGHT = 720;
 
-std::string vertFilePath = "Shaders/BasicVertex.vert";
-std::string fragFilePath = "Shaders/BasicFrag.frag";
+const std::string vertFilePath = "Shaders/BasicVertex.vert";
+const std::string fragFilePath = "Shaders/BasicFrag.frag";
 
 float vertices[] =
 {
