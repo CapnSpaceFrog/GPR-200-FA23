@@ -16,15 +16,15 @@ const int SCREEN_WIDTH = 1080;
 const int SCREEN_HEIGHT = 720;
 
 float vertices[] = {
-	//x   //y  //z
+	//x   //y  //z		//U	//V
 	//Bottom Left
-	-0.5, -0.5, 0.0, 0.0, 0.0, 0.0,
+	-0.5, -0.5, 0.0,	0.0, 0.0,
 	//Top Left
-	-0.5, 0.5, 0.0, 0.0, 0.0, 0.0,
+	-0.5, 0.5, 0.0,	0.0, 1.0,
 	//Top Right
-	0.5,  0.5, 0.0, 0.0, 0.0, 0.0,
+	0.5,  0.5, 0.0,	1.0, 1.0,
 	//Bottom Right
-	0.5, -0.5, 0.0, 0.0, 0.0, 0.0,
+	0.5, -0.5, 0.0,	1.0, 0.0,
 };
 
 unsigned int indices[] = {
