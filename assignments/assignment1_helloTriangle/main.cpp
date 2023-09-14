@@ -6,23 +6,19 @@
 	of this project aside from Eric Winebrenner, the teacher of GPR-200.
 */
 
-#include "glHelpers.h"
-#include "shader.h"
+#include "gizmosLib/Shader/shader.h"
+#include "gizmosLib/glHelpers/glHelpers.h"
 #include <stdio.h>
 #include <math.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
-#include <ew/external/glad.h>
-#include <ew/ewMath/ewMath.h>
+#include <external/glad.h>
 #include <GLFW/glfw3.h>
 
 const int SCREEN_WIDTH = 1080;
 const int SCREEN_HEIGHT = 720;
-
-const std::string vertFilePath = "Shaders/BasicVertex.vert";
-const std::string fragFilePath = "Shaders/BasicFrag.frag";
 
 float vertices[] =
 {

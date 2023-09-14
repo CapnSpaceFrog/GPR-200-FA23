@@ -1,14 +1,16 @@
-#include <ew/external/glad.h>
-#include "shader.h"
+#include "GizmosLib/OpenGL/shaderProgram.h"
+#include <external/glad.h>
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
 
+using namespace GizmosLib::OpenGL::Shaders;
+
 //Read shader source code from file, compile, then test compilation
 //Create a shader program and attach vert and frag shaders then link together & check for errors
 //Delete shaders after linked and compiled as they are no longer needed
-Shader::Shader(const char* vertSourcePath, const char* fragSourcePath)
+ShaderProgram::ShaderProgram(const char* vertSourcePath, const char* fragSourcePath)
 {
 	//READ FROM FILE
 	std::ifstream vertShaderFile, fragShaderFile;
@@ -80,26 +82,61 @@ Shader::Shader(const char* vertSourcePath, const char* fragSourcePath)
 	glDeleteShader(fragShaderID);
 }
 
-//Generic accessor function to set a float value
-void Shader::SetUniform1f(const char* name, float value)
+//FLOAT UNIFORM SETTERS
+void ShaderProgram::SetUniform1f(const char* name, float value) const
 {
 	glUniform1f(glGetUniformLocation(programID, name), value);
 }
 
-//Make this shader program the active shader when draw call is made
-void Shader::MakeActive()
+void ShaderProgram::SetUniformVec2f(const char* name, Vector2<float> vec)
+{
+	glUniform2f(glGetUniformLocation(programID, name), vec.x, vec.y);
+}
+
+void ShaderProgram::SetUniformVec3f(const char* name, Vector3<float> vec)
+{
+	glUniform3f(glGetUniformLocation(programID, name), vec.x, vec.y, vec.z);
+}
+
+void ShaderProgram::SetUniformVec4f(const char* name, Vector4<float> vec)
+{
+	glUniform4f(glGetUniformLocation(programID, name), vec.x, vec.y, vec.z, vec.w);
+}
+
+//INT UNIFORM SETTERS
+void ShaderProgram::SetUniform1i(const char* name, int value) const
+{
+	glUniform1i(glGetUniformLocation(programID, name), value);
+}
+
+void ShaderProgram::SetUniformVec2i(const char* name, Vector2<int> vec)
+{
+	glUniform2i(glGetUniformLocation(programID, name), vec.x, vec.y);
+}
+
+void ShaderProgram::SetUniformVec3i(const char* name, Vector3<int> vec)
+{
+	glUniform3i(glGetUniformLocation(programID, name), vec.x, vec.y, vec.z);
+}
+
+void ShaderProgram::SetUniformVec4i(const char* name, Vector4<int> vec)
+{
+	glUniform4i(glGetUniformLocation(programID, name), vec.x, vec.y, vec.z, vec.w);
+}
+
+//UTILITY FUNCTIONS
+void ShaderProgram::MakeActive()
 {
 	glUseProgram(programID);
 }
 
-//Delete the shader program when application closes
-void Shader::Delete()
+void ShaderProgram::Delete()
 {
 	glDeleteProgram(programID);
 }
 
-//Stub function
-Shader::~Shader()
+//DESTRUCTOR
+ShaderProgram::~ShaderProgram()
 {
 
 }
