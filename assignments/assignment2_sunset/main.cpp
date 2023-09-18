@@ -18,13 +18,13 @@ const int SCREEN_HEIGHT = 720;
 float vertices[] = {
 	//x   //y  //z		//U	//V
 	//Bottom Left
-	-0.5, -0.5, 0.0,	0.0, 0.0,
+	-1.0, -1.0, 0.0,	0.0, 0.0,
 	//Top Left
-	-0.5, 0.5, 0.0,	0.0, 1.0,
+	-1.0, 1.0, 0.0,	0.0, 1.0,
 	//Top Right
-	0.5,  0.5, 0.0,	1.0, 1.0,
+	1.0,  1.0, 0.0,	1.0, 1.0,
 	//Bottom Right
-	0.5, -0.5, 0.0,	1.0, 0.0,
+	1.0, -1.0, 0.0,	1.0, 0.0,
 };
 
 unsigned int indices[] = {
@@ -34,8 +34,19 @@ unsigned int indices[] = {
 	3, 2, 0
 };
 
-float triangleColor[3] = { 1.0f, 0.5f, 0.0f };
-float triangleBrightness = 1.0f;
+//BACKGROUND COLORS
+float dayColorTop[3] = { 0.45f, 0.25f, 0.42f };
+float dayColorBottom[3] = { 0.87f, 0.25f, 0.09f };
+float nightColorTop[3] = { 0.875f, 0.33f, 0.40f };
+float nightColorBottom[3] = { 0.16f, 0.13f, 0.39f };
+float foregroundColor[3] = { 0.14f, 0.05f, 0.01f };
+
+//SUN VARIABLES
+float sunColorMax[3] = { 0.89f, 0.53f, 0.03f };
+float sunColorMin[3] = { 0.72f, 0.32f, 0.15f };
+float sunRadius = 0.35f;
+float sunSpeed = 0.85f;
+
 bool showImGUIDemoWindow = false;
 bool drawWireFrame = false;
 bool drawWithIndex = false;
@@ -78,9 +89,21 @@ int main()
 		glClearColor(0.3f, 0.4f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		//Set uniforms
-		defaultShader.SetUniformVec3f("uColor", Vector3<float>(triangleColor[0], triangleColor[1], triangleColor[2]));
-		defaultShader.SetUniform1f("uBrightness", triangleBrightness);
+		//SET UNIFORMS
+		//BACKGROUND COLORS
+		defaultShader.SetUniformVec3f("uDayColorTop", Vector3<float>(dayColorBottom[0], dayColorBottom[1], dayColorBottom[2]));
+		defaultShader.SetUniformVec3f("uDayColorBottom", Vector3<float>(dayColorTop[0], dayColorTop[1], dayColorTop[2]));
+		defaultShader.SetUniformVec3f("uNightColorTop", Vector3<float>(nightColorTop[0], nightColorTop[1], nightColorTop[2]));
+		defaultShader.SetUniformVec3f("uNightColorBottom", Vector3<float>(nightColorBottom[0], nightColorBottom[1], nightColorBottom[2]));
+		defaultShader.SetUniformVec3f("uForegroundColor", Vector3<float>(foregroundColor[0], foregroundColor[1], foregroundColor[2]));
+
+		//SUN UNIFORMS
+		defaultShader.SetUniformVec3f("uSunColorMax", Vector3<float>(sunColorMax[0], sunColorMax[1], sunColorMax[2]));
+		defaultShader.SetUniformVec3f("uSunColorMin", Vector3<float>(sunColorMin[0], sunColorMin[1], sunColorMin[2]));
+		defaultShader.SetUniform1f("uSunRadius", sunRadius);
+		defaultShader.SetUniform1f("uSunSpeed", sunSpeed);
+
+		defaultShader.SetUniform1f("uTime", glfwGetTime());
 
 		if (drawWithIndex)
 		{
@@ -99,10 +122,18 @@ int main()
 
 			ImGui::Begin("Settings");
 			ImGui::Checkbox("Show Demo Window", &showImGUIDemoWindow);
-			ImGui::ColorEdit3("Color", triangleColor);
-			ImGui::SliderFloat("Brightness", &triangleBrightness, 0.0f, 1.0f);
 			ImGui::Checkbox("Wireframe Mode", &drawWireFrame);
 			ImGui::Checkbox("Draw with Index", &drawWithIndex);
+			ImGui::ColorEdit3("Day Color Top", dayColorTop);
+			ImGui::ColorEdit3("Day Color Bottom", dayColorBottom);
+			ImGui::ColorEdit3("Night Color Top", nightColorTop);
+			ImGui::ColorEdit3("Night Color Bottom", nightColorBottom);
+			ImGui::ColorEdit3("Foreground Color", foregroundColor);
+			ImGui::ColorEdit3("Sun Color Max", sunColorMax);
+			ImGui::ColorEdit3("Sun Color Min", sunColorMin);
+			ImGui::DragFloat("Sun Radius", &sunRadius, 1.0f, 0.0f, 2.0f);
+			ImGui::DragFloat("Sun Speed", &sunSpeed, 1.0f, 0.0f, 2.0f);
+
 			ImGui::End();
 			if (showImGUIDemoWindow) {
 				ImGui::ShowDemoWindow(&showImGUIDemoWindow);
