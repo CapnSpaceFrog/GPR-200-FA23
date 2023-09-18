@@ -16,6 +16,8 @@ uniform vec3 uNightColorBottom;
 
 uniform vec3 uForegroundColor;
 
+uniform vec2 uScreenSize;
+
 out vec4 FragColor;
 
 float circleSDF(vec2 p, float r)
@@ -26,10 +28,10 @@ float circleSDF(vec2 p, float r)
 void main()
 {
 	//Need to fix the UV coords so the sun is offset properly
-	vec2 normalizedUV = UV / (1080/720);
+	vec2 adjustedUV = (UV * 2) - 1.0;
+	adjustedUV.x *= (uScreenSize.x / uScreenSize.y);
 
-	vec2 adjustedUV = UV;
-	adjustedUV.x *= (1080 / 720);
+	vec3 testUVColor = vec3(adjustedUV.xy, 0.0);
 
 	float sunSpeed = uTime * uSunSpeed;
 
@@ -38,21 +40,21 @@ void main()
 	//Noramlized Sun Pos
 	float normSunYPos = (sunPos.y / 2.0) + 0.75;
 
-	float sunShape = circleSDF(UV - sunPos, uSunRadius);
+	float sunShape = circleSDF(adjustedUV - sunPos, uSunRadius);
 	sunShape = smoothstep(-0.08, 0.08, sunShape);
 
 	//Layering Colors
 	vec4 sunColor = vec4(mix(uSunColorMin, uSunColorMax, normSunYPos), 1.0);
 
-	vec3 dayColor = mix(uDayColorTop, uDayColorBottom, normalizedUV.y);
-	vec3 nightColor = mix(uNightColorTop, uNightColorBottom, normalizedUV.y);
+	vec3 dayColor = mix(uDayColorBottom, uDayColorTop, UV.y);
+	vec3 nightColor = mix(uNightColorBottom, uNightColorTop, UV.y);
 	vec3 background = mix(nightColor, dayColor, normSunYPos);
 
 	vec3 sunset = mix(sunColor.rgb, background, sunShape * sunColor.a);
 
-	//Mix in rollnig hills
-	float hillStep = 0.15 + ( sin(normalizedUV.x * 2.56 + uTime) + sin(uTime) ) * 0.05;
-	hillStep = 1.0 - step(hillStep, normalizedUV.y);
+	//Mix in rolling hills
+	float hillStep = 0.15 + ( sin(UV.x * 2.56 + uTime) + sin(uTime) ) * 0.05;
+	hillStep = 1.0 - step(hillStep, UV.y);
 
 	vec3 finalColor = mix(sunset, uForegroundColor, hillStep);
 

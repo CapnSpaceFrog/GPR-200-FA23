@@ -37,19 +37,19 @@ unsigned int indices[] = {
 //BACKGROUND COLORS
 float dayColorTop[3] = { 0.45f, 0.25f, 0.42f };
 float dayColorBottom[3] = { 0.87f, 0.25f, 0.09f };
-float nightColorTop[3] = { 0.875f, 0.33f, 0.40f };
-float nightColorBottom[3] = { 0.16f, 0.13f, 0.39f };
+float nightColorTop[3] = { 0.059f, 0.047f, 0.118f };
+float nightColorBottom[3] = { 0.296f, 0.275f, 0.510f };
 float foregroundColor[3] = { 0.14f, 0.05f, 0.01f };
 
 //SUN VARIABLES
 float sunColorMax[3] = { 0.89f, 0.53f, 0.03f };
 float sunColorMin[3] = { 0.72f, 0.32f, 0.15f };
-float sunRadius = 0.35f;
-float sunSpeed = 0.85f;
+float sunRadius = 0.25f;
+float sunSpeed = 0.75f;
 
 bool showImGUIDemoWindow = false;
 bool drawWireFrame = false;
-bool drawWithIndex = false;
+bool drawWithIndex = true;
 
 int main()
 {
@@ -91,8 +91,8 @@ int main()
 
 		//SET UNIFORMS
 		//BACKGROUND COLORS
-		defaultShader.SetUniformVec3f("uDayColorTop", Vector3<float>(dayColorBottom[0], dayColorBottom[1], dayColorBottom[2]));
-		defaultShader.SetUniformVec3f("uDayColorBottom", Vector3<float>(dayColorTop[0], dayColorTop[1], dayColorTop[2]));
+		defaultShader.SetUniformVec3f("uDayColorTop", Vector3<float>(dayColorTop[0], dayColorTop[1], dayColorTop[2]));
+		defaultShader.SetUniformVec3f("uDayColorBottom", Vector3<float>(dayColorBottom[0], dayColorBottom[1], dayColorBottom[2]));
 		defaultShader.SetUniformVec3f("uNightColorTop", Vector3<float>(nightColorTop[0], nightColorTop[1], nightColorTop[2]));
 		defaultShader.SetUniformVec3f("uNightColorBottom", Vector3<float>(nightColorBottom[0], nightColorBottom[1], nightColorBottom[2]));
 		defaultShader.SetUniformVec3f("uForegroundColor", Vector3<float>(foregroundColor[0], foregroundColor[1], foregroundColor[2]));
@@ -104,6 +104,7 @@ int main()
 		defaultShader.SetUniform1f("uSunSpeed", sunSpeed);
 
 		defaultShader.SetUniform1f("uTime", glfwGetTime());
+		defaultShader.SetUniformVec2f("uScreenSize", Vector2<float>(SCREEN_WIDTH, SCREEN_HEIGHT));
 
 		if (drawWithIndex)
 		{
