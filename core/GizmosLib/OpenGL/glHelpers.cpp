@@ -1,4 +1,5 @@
 #include "glHelpers.h"
+#include <external/stb_image.h>
 
 namespace GizmosLib { namespace OpenGL 
 {
@@ -43,5 +44,49 @@ namespace GizmosLib { namespace OpenGL
 	void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 	{
 		glViewport(0, 0, width, height);
+	}
+
+	unsigned int loadTexture(const char* filePath)
+	{
+		stbi_set_flip_vertically_on_load(true);
+
+		int width, height, numComponents;
+		unsigned char* imgData = stbi_load(filePath, &width, &height, &numComponents, 0);
+		
+		if (imgData == NULL)
+		{
+			printf("Failed to load image %s", filePath);
+			stbi_image_free(imgData);
+			return 0;
+		}
+
+		GLenum internalFormat;
+		switch (numComponents)
+		{
+		case 1:
+			internalFormat = GL_RED;
+			break;
+
+		case 2:
+			internalFormat = GL_RG;
+			break;
+
+		case 3:
+			internalFormat = GL_RGB;
+			break;
+
+		case 4:
+			internalFormat = GL_RGBA;
+			break;
+
+		default:
+			printf("Did not get a proper internal format when loading texture.");
+			return 0;
+		}
+
+		unsigned int texture;
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgData);
 	}
 } }

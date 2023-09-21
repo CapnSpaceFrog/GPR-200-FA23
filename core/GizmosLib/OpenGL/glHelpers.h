@@ -15,6 +15,8 @@ namespace GizmosLib
 		unsigned int generateVAO(float* vertData, int numOfVerts, unsigned int* indicesData, int numIndices);
 
 		void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+
+		unsigned int loadTexture(const char* filePath);
 	}
 }
 
