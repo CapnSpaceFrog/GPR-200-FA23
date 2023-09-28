@@ -4,7 +4,7 @@
 namespace GizmosLib { namespace OpenGL 
 {
 	//Generate and bind a VAO to the current OpenGL context.
-			//Takes in an array of vertData and the number of elements in the array.
+	//Takes in an array of vertData and the number of elements in the array.
 	unsigned int generateVAO(float* vertData, int numOfVerts, unsigned int* indicesData, int numIndices)
 	{
 		//VAO
@@ -46,7 +46,7 @@ namespace GizmosLib { namespace OpenGL
 		glViewport(0, 0, width, height);
 	}
 
-	unsigned int loadTexture(const char* filePath)
+	unsigned int loadTexture(const char* filePath, GLenum minFilterMode, GLenum magFilterMode, GLenum horWrapMode, GLenum vertWrapMode)
 	{
 		stbi_set_flip_vertically_on_load(true);
 
@@ -87,6 +87,23 @@ namespace GizmosLib { namespace OpenGL
 		unsigned int texture;
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgData);
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, internalFormat, GL_UNSIGNED_BYTE, imgData);
+
+		//Set the texture wrapping
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, horWrapMode);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, vertWrapMode);
+
+		//Set the texture filtering (GL_TEXTURE_MIN must be set for proper functionality)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilterMode);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilterMode);
+
+		//Generate MIPMAPS for the texture
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		//This was in the document, unsure why its here, perhaps it has to do with texture units?
+		//glBindTexture(GL_TEXTURE_2D, 0);
+		stbi_image_free(imgData);
+
+		return texture;
 	}
 } }

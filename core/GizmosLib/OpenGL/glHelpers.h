@@ -16,7 +16,7 @@ namespace GizmosLib
 
 		void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
-		unsigned int loadTexture(const char* filePath);
+		unsigned int loadTexture(const char* filePath, GLenum minFilterMode, GLenum magFilterMode, GLenum horWrapMode, GLenum vertWrapMode);
 	}
 }
 
