@@ -12,6 +12,7 @@
 
 const std::string backgroundTexPath = "assets/background.png";
 const std::string noiseTexPath = "assets/noise.png";
+const std::string tilingTexPath = "assets/tiling.png";
 const std::string characterTexPath = "assets/frog.png";
 
 const int SCREEN_WIDTH = 1080;
@@ -72,6 +73,7 @@ int main() {
 	unsigned int characterTexture = GizmosLib::OpenGL::loadTexture(characterTexPath.c_str(), GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
 	unsigned int backgroundTexture = GizmosLib::OpenGL::loadTexture(backgroundTexPath.c_str(), GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_LINEAR, GL_REPEAT, GL_REPEAT);
 	unsigned int noiseTexture = GizmosLib::OpenGL::loadTexture(noiseTexPath.c_str(), GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_LINEAR, GL_REPEAT, GL_CLAMP_TO_EDGE);
+	unsigned int tilingTexture = GizmosLib::OpenGL::loadTexture(tilingTexPath.c_str(), GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_LINEAR, GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT);
 
 	//ENABLE BLENDING
 	glEnable(GL_BLEND);
@@ -96,9 +98,13 @@ int main() {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, noiseTexture);
 
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, tilingTexture);
+
 		//SET BACKGROUND SHADER UNIFORMS
 		backgroundShader.SetUniform1i("uBackgroundTexture", 0);
 		backgroundShader.SetUniform1i("uNoiseTexture", 1);
+		backgroundShader.SetUniform1i("uTilingTexture", 2);
 		backgroundShader.SetUniform1f("uTime", glfwGetTime());
 
 		//DRAW BACKGROUND
@@ -106,11 +112,11 @@ int main() {
 
 		//BIND CHARACTER TEXTURE
 		characterShader.MakeActive();
-		glActiveTexture(GL_TEXTURE2);
+		glActiveTexture(GL_TEXTURE3);
 		glBindTexture(GL_TEXTURE_2D, characterTexture);
 
 		//SET CHARACTER SHADER UNIFORMS
-		characterShader.SetUniform1i("uCharacterTexture", 2);
+		characterShader.SetUniform1i("uCharacterTexture", 3);
 		characterShader.SetUniform1f("uCharacterScale", 0.5);
 		characterShader.SetUniform1f("uTime", glfwGetTime());
 

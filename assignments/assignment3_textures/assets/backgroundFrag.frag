@@ -7,6 +7,7 @@ uniform vec2 uScreenSize;
 
 uniform sampler2D uBackgroundTexture;
 uniform sampler2D uNoiseTexture;
+uniform sampler2D uTilingTexture;
 
 out vec4 FragColor;
 
@@ -17,14 +18,14 @@ void main()
 	//Only want noise applied to the bottom half of the background
 	float applyNoise = step(0.45, UV.y) - 1;
 
-	vec2 adjustedUV = UV + ( (noise * applyNoise) * 0.01f );
+	vec2 noiseUV = UV + noise * 0.1;
+	vec4 tiling = texture(uTilingTexture, noiseUV * 25 + (uTime*0.25));
 
-	vec4 bg = texture(uBackgroundTexture, vec2(adjustedUV.x + (uTime*0.25), adjustedUV.y));
+	vec2 steppedUV = UV + ( (noise * applyNoise) * 0.01 );
+	vec4 bg = texture(uBackgroundTexture, vec2(steppedUV.x + (uTime*0.25), steppedUV.y));
 
-	//vec4 noise = texture(uNoiseTexture, UV);
+	vec4 final = mix(bg, tiling, tiling.a * 0.2);
 
-	//vec4 final = mix(bg, noise, noise.a * 0.2);
-
-	FragColor = bg;
+	FragColor = final;
 }
 
