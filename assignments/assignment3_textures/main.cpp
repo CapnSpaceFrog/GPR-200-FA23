@@ -71,9 +71,9 @@ int main() {
 	unsigned int quadVAO = GizmosLib::OpenGL::generateVAO(vertices, 20, indices, 6);
 
 	unsigned int characterTexture = GizmosLib::OpenGL::loadTexture(characterTexPath.c_str(), GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
-	unsigned int backgroundTexture = GizmosLib::OpenGL::loadTexture(backgroundTexPath.c_str(), GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR, GL_REPEAT, GL_REPEAT);
+	unsigned int backgroundTexture = GizmosLib::OpenGL::loadTexture(backgroundTexPath.c_str(), GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR, GL_REPEAT, GL_REPEAT);
 	unsigned int noiseTexture = GizmosLib::OpenGL::loadTexture(noiseTexPath.c_str(), GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR, GL_REPEAT, GL_CLAMP_TO_EDGE);
-	unsigned int tilingTexture = GizmosLib::OpenGL::loadTexture(tilingTexPath.c_str(), GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR, GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT);
+	unsigned int tilingTexture = GizmosLib::OpenGL::loadTexture(tilingTexPath.c_str(), GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR, GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT);
 
 	//ENABLE BLENDING
 	glEnable(GL_BLEND);
