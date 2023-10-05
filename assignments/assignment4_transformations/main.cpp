@@ -1,39 +1,45 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <ew/external/glad.h>
-#include <ew/ewMath/ewMath.h>
+#include <external/glad.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include <ew/shader.h>
-#include <ew/ewMath/vec3.h>
+#include <ew/mesh.h>
 #include <ew/procGen.h>
 
-void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+#include <GizmosLib/OpenGL/shaderProgram.h>
+#include <GizmosLib/OpenGL/glHelpers.h>
+#include <GizmosLib/Math/transformations.h>
 
 //Square aspect ratio for now. We will account for this with projection later.
 const int SCREEN_WIDTH = 720;
 const int SCREEN_HEIGHT = 720;
+const int CUBE_COUNT = 4;
 
-int main() {
+int main()
+{
 	printf("Initializing...");
-	if (!glfwInit()) {
+	if (!glfwInit())
+	{
 		printf("GLFW failed to init!");
 		return 1;
 	}
 
 	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Textures", NULL, NULL);
-	if (window == NULL) {
+	if (window == NULL)
+	{
 		printf("GLFW failed to create window");
 		return 1;
 	}
-	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
-	if (!gladLoadGL(glfwGetProcAddress)) {
+	glfwMakeContextCurrent(window);
+	glfwSetFramebufferSizeCallback(window, GizmosLib::OpenGL::framebufferSizeCallback);
+
+	if (!gladLoadGL(glfwGetProcAddress))
+	{
 		printf("GLAD Failed to load GL headers");
 		return 1;
 	}
@@ -51,10 +57,18 @@ int main() {
 	//Depth testing - required for depth sorting!
 	glEnable(GL_DEPTH_TEST);
 
-	ew::Shader shader("assets/vertexShader.vert", "assets/fragmentShader.frag");
+	GizmosLib::OpenGL::Shaders::ShaderProgram cubeShader("assets/vertexShader.vert", "assets/fragmentShader.frag");
 	
 	//Cube mesh
 	ew::Mesh cubeMesh(ew::createCube(0.5f));
+
+	GizmosLib::Math::Transform::Transform* cubeTransforms = new GizmosLib::Math::Transform::Transform[CUBE_COUNT];
+
+	cubeTransforms[0].Position = ew::Vec3(-0.5f, 0.5f, 0.0f);
+	cubeTransforms[1].Position = ew::Vec3(-0.5f, -0.5f, 0.0f);
+	cubeTransforms[2].Position = ew::Vec3(0.5f, 0.5f, 0.0f);
+	cubeTransforms[3].Position = ew::Vec3(0.5f, -0.5f, 0.0f);
+
 	
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -63,11 +77,13 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//Set uniforms
-		shader.use();
+		cubeShader.MakeActive();
 
-		//TODO: Set model matrix uniform
-
-		cubeMesh.draw();
+		for (int i = 0; i < CUBE_COUNT; i++)
+		{
+			cubeShader.SetUniformMatrix("uModel", cubeTransforms[i].GetModelMatrix());
+			cubeMesh.draw();
+		}
 
 		//Render UI
 		{
@@ -75,7 +91,22 @@ int main() {
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
 
-			ImGui::Begin("Transform");
+			ImGui::Begin("Transforms");
+
+			for (int i = 0; i < CUBE_COUNT; i++)
+			{
+				ImGui::PushID(i);
+
+				if (ImGui::CollapsingHeader("Transform"))
+				{
+					ImGui::DragFloat3("Position", &cubeTransforms[i].Position.x, 0.05f);
+					ImGui::DragFloat3("Rotation", &cubeTransforms[i].Rotation.x, 1.0f);
+					ImGui::DragFloat3("Scale", &cubeTransforms[i].Scale.x, 0.05f);
+				}
+				
+				ImGui::PopID();
+			}
+			
 			ImGui::End();
 
 			ImGui::Render();

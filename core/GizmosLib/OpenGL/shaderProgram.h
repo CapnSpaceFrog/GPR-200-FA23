@@ -2,6 +2,7 @@
 #define SHADER_CLASS
 
 #include "GizmosLib/Math/vector.h"
+#include <ew/ewMath/mat4.h>
 
 using namespace GizmosLib::Math;
 
@@ -28,6 +29,8 @@ namespace GizmosLib { namespace OpenGL
 			void SetUniformVec2i(const char* name, Vector2<int> vec);
 			void SetUniformVec3i(const char* name, Vector3<int> vec);
 			void SetUniformVec4i(const char* name, Vector4<int> vec);
+
+			void SetUniformMatrix(const char* name, ew::Mat4& mat);
 
 			//Stub functions that are not used yet
 			void AttachShader();

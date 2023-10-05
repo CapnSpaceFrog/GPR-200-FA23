@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <ew/ewMath/mat4.h>
 
 using namespace GizmosLib::OpenGL::Shaders;
 
@@ -122,6 +123,12 @@ void ShaderProgram::SetUniformVec3i(const char* name, Vector3<int> vec)
 void ShaderProgram::SetUniformVec4i(const char* name, Vector4<int> vec)
 {
 	glUniform4i(glGetUniformLocation(programID, name), vec.x, vec.y, vec.z, vec.w);
+}
+
+//MATRIX UNIFORM SETTERS
+void ShaderProgram::SetUniformMatrix(const char* name, ew::Mat4& mat)
+{
+	glUniformMatrix4fv(glGetUniformLocation(programID, name), 1, GL_FALSE, &mat[0][0]);
 }
 
 //UTILITY FUNCTIONS
