@@ -33,7 +33,7 @@ namespace GizmosLib
 			{
 				return ew::Mat4(
 					1,		0,				0,					0,
-					0,		cos(rad),	-1*sin(rad),	0,
+					0,		cos(rad),	-sin(rad),	0,
 					0,		sin(rad),	cos(rad),		0,
 					0,		0,				0,					1
 				);
@@ -52,7 +52,7 @@ namespace GizmosLib
 			inline ew::Mat4 RotateZ(float rad)
 			{
 				return ew::Mat4(
-					cos(rad),	-1*sin(rad),	0,		0,
+					cos(rad),	-sin(rad),	0,		0,
 					sin(rad),	cos(rad),		0,		0,
 					0,				0,					1,		0,
 					0,				0,					0,		1
@@ -77,7 +77,7 @@ namespace GizmosLib
 
 				ew::Mat4 GetModelMatrix() const
 				{
-					ew::Mat4 R = RotateZ(Rotation.z * ew::DEG2RAD) * RotateY(Rotation.y * ew::DEG2RAD) * RotateX(Rotation.x * ew::DEG2RAD);
+					ew::Mat4 R = RotateY(Rotation.y * ew::DEG2RAD) * RotateX(Rotation.x * ew::DEG2RAD) * RotateZ(Rotation.z * ew::DEG2RAD);
 					
 					ew::Mat4 T = ew::Mat4(
 						1, 0, 0, Position.x,

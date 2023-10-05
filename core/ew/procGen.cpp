@@ -13,7 +13,8 @@ namespace ew {
 	/// <param name="normal">Normal direction of the face</param>
 	/// <param name="size">Width/height of the face</param>
 	/// <param name="mesh">MeshData struct to fill</param>
-	static void createCubeFace(ew::Vec3 normal, float size, MeshData* mesh) {
+	static void createCubeFace(ew::Vec3 normal, float size, MeshData* mesh)
+	{
 		unsigned int startVertex = mesh->vertices.size();
 		ew::Vec3 a = ew::Vec3(normal.z, normal.x, normal.y); //U axis
 		ew::Vec3 b = ew::Cross(normal, a); //V axis

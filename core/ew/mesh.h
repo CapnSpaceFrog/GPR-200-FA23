@@ -6,18 +6,21 @@
 #include "ewMath/ewMath.h"
 
 namespace ew {
-	struct Vertex {
+	struct Vertex
+	{
 		ew::Vec3 pos;
 		ew::Vec3 normal;
 		ew::Vec2 uv;
 	};
 
-	struct MeshData {
+	struct MeshData
+	{
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
 	};
 
-	class Mesh {
+	class Mesh
+	{
 	public:
 		Mesh() {};
 		Mesh(const MeshData& meshData);

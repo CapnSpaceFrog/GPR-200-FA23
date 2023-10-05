@@ -6,6 +6,7 @@
 #pragma once
 #include "mesh.h"
 
-namespace ew {
+namespace ew
+{
 	MeshData createCube(float size);
 }

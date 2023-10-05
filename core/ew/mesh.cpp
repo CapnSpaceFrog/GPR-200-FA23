@@ -41,12 +41,16 @@ namespace ew {
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 
-		if (meshData.vertices.size() > 0) {
+		if (meshData.vertices.size() > 0)
+		{
 			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * meshData.vertices.size(), meshData.vertices.data(), GL_STATIC_DRAW);
 		}
-		if (meshData.indices.size() > 0) {
+
+		if (meshData.indices.size() > 0)
+		{
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * meshData.indices.size(), meshData.indices.data(), GL_STATIC_DRAW);
 		}
+		
 		m_numVertices = meshData.vertices.size();
 		m_numIndices = meshData.indices.size();
 
