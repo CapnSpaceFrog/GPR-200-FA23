@@ -149,7 +149,22 @@ namespace GizmosLib
 			//FOV = vertical aspect ratio (radians)
 			inline ew::Mat4 Perspective(float fov, float aspect, float nearPlane, float farPlane)
 			{
+				fov *= ew::DEG2RAD;
 
+				float e00 = 1 / (tan(fov / 2) * aspect);
+				float e11 = 1 / (tan(fov / 2));
+				float e22 = (nearPlane + farPlane) / (nearPlane - farPlane);
+				float e32 = (2 * farPlane * nearPlane) / (nearPlane - farPlane);
+
+				ew::Mat4 perspectiveProj = ew::Mat4
+				(
+					e00,	0.0f,		0.0f,		0.0f,
+					0.0f, e11,		0.0f,		0.0f,
+					0.0f,	0.0f,		e22,		e32,
+					0.0f,	0.0f,		-1.0f,	0.0f
+				);
+
+				return perspectiveProj;
 			}
 		}
 	}

@@ -49,7 +49,7 @@ namespace GizmosLib
 				//View -> Clip Space Matrix
 				ew::Mat4 ProjectionMatrix()
 				{
-					ew::Mat4 proj = Identity();
+					ew::Mat4 proj;
 
 					if (orthographic)
 					{
@@ -57,7 +57,7 @@ namespace GizmosLib
 					}
 					else
 					{
-
+						proj = Perspective(fov, aspectRatio, nearPlane, farPlane);
 					}
 
 					return proj;

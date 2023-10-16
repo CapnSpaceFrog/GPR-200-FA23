@@ -19,7 +19,6 @@
 //Projection will account for aspect ratio!
 const int SCREEN_WIDTH = 1080;
 const int SCREEN_HEIGHT = 720;
-const float ASPECT_RATIO = (SCREEN_WIDTH / SCREEN_HEIGHT) ;
 
 const int NUM_CUBES = 4;
 ew::Transform cubeTransforms[NUM_CUBES];
@@ -74,7 +73,7 @@ int main()
 	}
 
 	GizmosLib::Math::Camera::Camera basicCamera;
-	basicCamera.aspectRatio = ASPECT_RATIO;
+	basicCamera.aspectRatio = (SCREEN_WIDTH / SCREEN_HEIGHT);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -83,6 +82,8 @@ int main()
 		//Clear both color buffer AND depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		//glfwGetWindowSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
+		
 		//Set uniforms
 		cubeShader.MakeActive();
 
