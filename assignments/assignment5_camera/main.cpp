@@ -73,7 +73,7 @@ int main()
 	}
 
 	GizmosLib::Math::Camera::Camera basicCamera;
-	basicCamera.aspectRatio = (SCREEN_WIDTH / SCREEN_HEIGHT);
+	basicCamera.aspectRatio = ((float)SCREEN_WIDTH / SCREEN_HEIGHT);
 
 	while (!glfwWindowShouldClose(window))
 	{
