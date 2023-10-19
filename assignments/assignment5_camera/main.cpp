@@ -73,7 +73,9 @@ int main()
 	}
 
 	GizmosLib::Math::Camera::Camera basicCamera;
-	basicCamera.aspectRatio = ((float)SCREEN_WIDTH / SCREEN_HEIGHT);
+	
+	int screenWidth;
+	int screenHeight;
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -82,7 +84,8 @@ int main()
 		//Clear both color buffer AND depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//glfwGetWindowSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
+		glfwGetWindowSize(window, &screenWidth, &screenHeight);
+		basicCamera.aspectRatio = ((float)screenWidth / (float)screenHeight);
 		
 		//Set uniforms
 		cubeShader.MakeActive();
