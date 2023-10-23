@@ -73,13 +73,21 @@ int main()
 	}
 
 	GizmosLib::Math::Camera::Camera basicCamera;
+	GizmosLib::Math::Camera::CamControls basicCameraControls;
 	
 	int screenWidth;
 	int screenHeight;
 
+	float prevTime = 0;
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
+
+		float time = (float)glfwGetTime();
+		float deltaTime = time - prevTime;
+		prevTime = time;
+
+		GizmosLib::Math::Camera::MoveCamera(window, &basicCamera, &basicCameraControls, deltaTime);
 		glClearColor(0.3f, 0.4f, 0.9f, 1.0f);
 		//Clear both color buffer AND depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -90,13 +98,13 @@ int main()
 		//Set uniforms
 		cubeShader.MakeActive();
 
-		//TODO: Set model matrix uniform
+		cubeShader.SetUniformMatrix("uView", basicCamera.ViewMatrix());
+		cubeShader.SetUniformMatrix("uProjection", basicCamera.ProjectionMatrix());
+
 		for (size_t i = 0; i < NUM_CUBES; i++)
 		{
 			//Construct model matrix
 			cubeShader.SetUniformMatrix("uModel", cubeTransforms[i].getModelMatrix());
-			cubeShader.SetUniformMatrix("uView", basicCamera.ViewMatrix());
-			cubeShader.SetUniformMatrix("uProjection", basicCamera.ProjectionMatrix());
 			cubeMesh.draw();
 		}
 
@@ -137,7 +145,16 @@ int main()
 			ImGui::DragFloat("Near Plane", &basicCamera.nearPlane, 1.0f);
 			ImGui::DragFloat("Far Plane", &basicCamera.farPlane, 1.0f);
 
-			ImGui::Button("Reset Camera");
+			ImGui::Text("Camera Controller");
+			ImGui::Text("Yaw: %f", basicCameraControls.yaw);
+			ImGui::Text("Pitch: %f", basicCameraControls.pitch);
+			ImGui::DragFloat("Move Speed", &basicCameraControls.moveSpeed, 0.5f);
+
+			if (ImGui::Button("Reset Camera"))
+			{
+				basicCamera.Reset();
+				basicCameraControls.Reset();
+			}
 
 			ImGui::End();
 			
