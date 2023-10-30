@@ -43,6 +43,7 @@ struct AppSettings {
 struct DynamicSettings
 {
 	int PlaneSubdivisions = 1;
+	int CylinderSegments = 3;
 } dynamicSettings;
 
 ew::Camera camera;
@@ -94,11 +95,18 @@ int main() {
 	ew::MeshData planeData = GizmosLib::OpenGL::Procedural::createPlane(1, 1, dynamicSettings.PlaneSubdivisions);
 	ew::Mesh planeMesh(planeData);
 
+	//Create cylinder
+	ew::MeshData cylinderData = GizmosLib::OpenGL::Procedural::createCylinder(1.0f, 0.5f, dynamicSettings.CylinderSegments);
+	ew::Mesh cylinderMesh(cylinderData);
+
 	//Initialize transforms
 	ew::Transform cubeTransform;
 
 	GizmosLib::Math::Transform::Transform planeTransform;
 	planeTransform.Position = ew::Vec3(1.0f, 0.0f, 0.0f);
+
+	GizmosLib::Math::Transform::Transform cylinderTransform;
+	cylinderTransform.Position = ew::Vec3(-1.5f, 0.0f, 0.0f);
 
 	resetCamera(camera,cameraController);
 
@@ -137,6 +145,10 @@ int main() {
 		//Draw plane
 		shader.setMat4("_Model", planeTransform.GetModelMatrix());
 		planeMesh.draw( (ew::DrawMode) appSettings.drawAsPoints );
+
+		//Draw cylinder
+		shader.setMat4("_Model", cylinderTransform.GetModelMatrix());
+		cylinderMesh.draw((ew::DrawMode)appSettings.drawAsPoints);
 
 		//Render UI
 		{
@@ -183,9 +195,14 @@ int main() {
 
 			if (ImGui::CollapsingHeader("Bonus - Dynamic"))
 			{
-				if ( (bool)ImGui::DragInt("Plane Subdivisions", &dynamicSettings.PlaneSubdivisions, 1.0f, 1, 32) )
+				if (ImGui::DragInt("Plane Subdivisions", &dynamicSettings.PlaneSubdivisions, 1.0f, 1, 32))
 				{
 					planeMesh.load( GizmosLib::OpenGL::Procedural::createPlane(1, 1, dynamicSettings.PlaneSubdivisions) );
+				}
+
+				if (ImGui::DragInt("Cylinder Segments", &dynamicSettings.CylinderSegments, 1.0f, 3, 32))
+				{
+					cylinderMesh.load(GizmosLib::OpenGL::Procedural::createCylinder(1.0f, 0.5f, dynamicSettings.CylinderSegments));
 				}
 				
 			}
