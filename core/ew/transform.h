@@ -10,9 +10,9 @@ namespace ew {
 
 		ew::Mat4 getModelMatrix() const {
 			return ew::Translate(position)
-				* ew::RotateY(ew::Radians(rotation.y + (glfwGetTime()*2) ))
-				* ew::RotateX(ew::Radians(rotation.x + (glfwGetTime() * 2)))
-				* ew::RotateZ(ew::Radians(rotation.z + (glfwGetTime() * 2)))
+				* ew::RotateY(ew::Radians(rotation.y))
+				* ew::RotateX(ew::Radians(rotation.x))
+				* ew::RotateZ(ew::Radians(rotation.z))
 				* ew::Scale(scale);
 		}
 	};

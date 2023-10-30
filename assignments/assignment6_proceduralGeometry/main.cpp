@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <ew/external/glad.h>
+#include <external/glad.h>
 #include <ew/ewMath/ewMath.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
@@ -14,6 +14,9 @@
 #include <ew/transform.h>
 #include <ew/camera.h>
 #include <ew/cameraController.h>
+
+#include <GizmosLib/OpenGL/procGen.h>
+#include <GizmosLib/Math/transformations.h>
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void resetCamera(ew::Camera& camera, ew::CameraController& cameraController);
@@ -35,7 +38,12 @@ struct AppSettings {
 
 	//Euler angles (degrees)
 	ew::Vec3 lightRotation = ew::Vec3(0, 0, 0);
-}appSettings;
+} appSettings;
+
+struct DynamicSettings
+{
+	int PlaneSubdivisions = 1;
+} dynamicSettings;
 
 ew::Camera camera;
 ew::CameraController cameraController;
@@ -82,8 +90,15 @@ int main() {
 	ew::MeshData cubeMeshData = ew::createCube(0.5f);
 	ew::Mesh cubeMesh(cubeMeshData);
 
+	//Create plane
+	ew::MeshData planeData = GizmosLib::OpenGL::Procedural::createPlane(1, 1, dynamicSettings.PlaneSubdivisions);
+	ew::Mesh planeMesh(planeData);
+
 	//Initialize transforms
 	ew::Transform cubeTransform;
+
+	GizmosLib::Math::Transform::Transform planeTransform;
+	planeTransform.Position = ew::Vec3(1.0f, 0.0f, 0.0f);
 
 	resetCamera(camera,cameraController);
 
@@ -103,8 +118,6 @@ int main() {
 		//Clear both color buffer AND depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		
-
 		shader.use();
 		glBindTexture(GL_TEXTURE_2D, brickTexture);
 		shader.setInt("_Texture", 0);
@@ -119,7 +132,11 @@ int main() {
 
 		//Draw cube
 		shader.setMat4("_Model", cubeTransform.getModelMatrix());
-		cubeMesh.draw((ew::DrawMode)appSettings.drawAsPoints);
+		cubeMesh.draw( (ew::DrawMode) appSettings.drawAsPoints);
+
+		//Draw plane
+		shader.setMat4("_Model", planeTransform.GetModelMatrix());
+		planeMesh.draw( (ew::DrawMode) appSettings.drawAsPoints );
 
 		//Render UI
 		{
@@ -162,6 +179,15 @@ int main() {
 					glEnable(GL_CULL_FACE);
 				else
 					glDisable(GL_CULL_FACE);
+			}
+
+			if (ImGui::CollapsingHeader("Bonus - Dynamic"))
+			{
+				if ( (bool)ImGui::DragInt("Plane Subdivisions", &dynamicSettings.PlaneSubdivisions, 1.0f, 1, 32) )
+				{
+					planeMesh.load( GizmosLib::OpenGL::Procedural::createPlane(1, 1, dynamicSettings.PlaneSubdivisions) );
+				}
+				
 			}
 			ImGui::End();
 			
