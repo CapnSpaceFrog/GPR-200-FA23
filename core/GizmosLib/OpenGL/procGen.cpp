@@ -66,7 +66,7 @@ namespace GizmosLib
 				//Top Center Vertex
 				vert.pos = { 0, topY, 0 };
 				vert.normal = { 0, 1, 0 };
-				vert.uv = {0, 0};
+				vert.uv = {0.5, 0.5};
 				newCylinder.vertices.push_back(vert);
 
 				//Top Ring Vertices (top face)
@@ -82,7 +82,7 @@ namespace GizmosLib
 
 					vert.normal = { 0, 1, 0 };
 
-					vert.uv = ew::Vec2( (cos(theta) + 1) / 2, sin(theta) );
+					vert.uv = ew::Vec2( (cos(theta) + 1) * 0.5f, (sin(theta) + 1) * 0.5f );
 
 					newCylinder.vertices.push_back(vert);
 				}
@@ -130,7 +130,7 @@ namespace GizmosLib
 
 					vert.normal = { 0, -1, 0 };
 
-					vert.uv = ew::Vec2(cos(theta), sin(theta));
+					vert.uv = ew::Vec2( (cos(theta) + 1) * 0.5f , (sin(theta) + 1) * 0.5f );
 
 					newCylinder.vertices.push_back(vert);
 				}
@@ -138,7 +138,7 @@ namespace GizmosLib
 				//Bottom Center Vertex
 				vert.pos = { 0, bottomY, 0 };
 				vert.normal = { 0, -1, 0 };
-				vert.uv = { 0, 0 };
+				vert.uv = { 0.5f, 0.5f };
 				newCylinder.vertices.push_back(vert);
 
 				//INDICES
@@ -190,6 +190,76 @@ namespace GizmosLib
 			ew::MeshData createSphere(float radius, int segments)
 			{
 				ew::MeshData newSphere;
+				ew::Vertex vert;
+
+				//VERTEX
+				float yawStep = 2 * ew::PI / segments;
+				float pitchStep = ew::PI / segments;
+
+				for (int row = 0; row <= segments; row++)
+				{
+					//First and last row converge at the poles
+
+					float pitch = row * pitchStep;
+
+					for (int col = 0; col <= segments; col++)
+					{
+						float yaw = col * yawStep;
+
+						vert.pos.x = radius * cos(yaw) * sin(pitch);
+						vert.pos.y = radius * cos(pitch);
+						vert.pos.z = radius * sin(yaw) * sin(pitch);
+
+						newSphere.vertices.push_back(vert);
+					}
+				}
+
+				//INDICIES
+				//Top Cap 
+				int poleStart = 0;
+				int sideStart = segments + 1;
+
+				for (int i = 0; i < segments; i++)
+				{
+					newSphere.indices.push_back(sideStart + i);
+					newSphere.indices.push_back(poleStart + i); //This is the pole vertex
+					newSphere.indices.push_back(sideStart + i + 1);
+				}
+
+				//Sides
+				int columns = segments + 1;
+
+				//Need to skip the top & bottom rows, since we already wound those
+				for (int row = 1; row < (segments - 1); row++)
+				{
+					for (int col = 0; col < segments; col++)
+					{
+						int start = row * columns + col;
+
+						//Top Right Triangles
+						newSphere.indices.push_back(start);
+						newSphere.indices.push_back(start + 1);
+						newSphere.indices.push_back(start + columns);
+
+						//Bottom Right Triangles
+						newSphere.indices.push_back(start + 1);
+						newSphere.indices.push_back(start + columns + 1);
+						newSphere.indices.push_back(start + columns);
+					}
+				}
+
+				//Bottom Cap
+				poleStart = ((segments+1)*(columns-1));
+				sideStart = ((segments + 1) * (columns-2) );
+
+				for (int i = 0; i < segments; i++)
+				{
+					newSphere.indices.push_back(sideStart + i + 1);
+
+					newSphere.indices.push_back(poleStart + i); //This is the pole vertex
+					
+					newSphere.indices.push_back(sideStart + i);
+				}
 
 				return newSphere;
 			}

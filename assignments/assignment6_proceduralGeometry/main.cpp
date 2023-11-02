@@ -44,6 +44,7 @@ struct DynamicSettings
 {
 	int PlaneSubdivisions = 1;
 	int CylinderSegments = 3;
+	int SphereSegments = 3;
 } dynamicSettings;
 
 ew::Camera camera;
@@ -99,6 +100,10 @@ int main() {
 	ew::MeshData cylinderData = GizmosLib::OpenGL::Procedural::createCylinder(1.0f, 0.5f, dynamicSettings.CylinderSegments);
 	ew::Mesh cylinderMesh(cylinderData);
 
+	//Create sphere
+	ew::MeshData sphereData = GizmosLib::OpenGL::Procedural::createSphere(1.0f, dynamicSettings.SphereSegments);
+	ew::Mesh sphereMesh(sphereData);
+
 	//Initialize transforms
 	ew::Transform cubeTransform;
 
@@ -107,6 +112,9 @@ int main() {
 
 	GizmosLib::Math::Transform::Transform cylinderTransform;
 	cylinderTransform.Position = ew::Vec3(-1.5f, 0.0f, 0.0f);
+
+	GizmosLib::Math::Transform::Transform sphereTransform;
+	sphereTransform.Position = ew::Vec3(3.5f, 0.0f, 0.0f);
 
 	resetCamera(camera,cameraController);
 
@@ -149,6 +157,10 @@ int main() {
 		//Draw cylinder
 		shader.setMat4("_Model", cylinderTransform.GetModelMatrix());
 		cylinderMesh.draw((ew::DrawMode)appSettings.drawAsPoints);
+
+		//Draw sphere
+		shader.setMat4("_Model", sphereTransform.GetModelMatrix());
+		sphereMesh.draw((ew::DrawMode)appSettings.drawAsPoints);
 
 		//Render UI
 		{
@@ -205,6 +217,10 @@ int main() {
 					cylinderMesh.load(GizmosLib::OpenGL::Procedural::createCylinder(1.0f, 0.5f, dynamicSettings.CylinderSegments));
 				}
 				
+				if (ImGui::DragInt("Sphere Segments", &dynamicSettings.SphereSegments, 1.0f, 3, 32))
+				{
+					sphereMesh.load(GizmosLib::OpenGL::Procedural::createCylinder(1.0f, 0.5f, dynamicSettings.SphereSegments));
+				}
 			}
 			ImGui::End();
 			
