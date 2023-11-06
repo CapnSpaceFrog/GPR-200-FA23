@@ -219,7 +219,7 @@ int main() {
 				
 				if (ImGui::DragInt("Sphere Segments", &dynamicSettings.SphereSegments, 1.0f, 3, 32))
 				{
-					sphereMesh.load(GizmosLib::OpenGL::Procedural::createCylinder(1.0f, 0.5f, dynamicSettings.SphereSegments));
+					sphereMesh.load(GizmosLib::OpenGL::Procedural::createSphere(1.0f, dynamicSettings.SphereSegments));
 				}
 			}
 			ImGui::End();

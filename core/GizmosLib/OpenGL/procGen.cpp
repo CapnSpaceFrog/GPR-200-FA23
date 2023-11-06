@@ -196,6 +196,8 @@ namespace GizmosLib
 				float yawStep = 2 * ew::PI / segments;
 				float pitchStep = ew::PI / segments;
 
+				int columns = segments + 1;
+
 				for (int row = 0; row <= segments; row++)
 				{
 					//First and last row converge at the poles
@@ -209,6 +211,10 @@ namespace GizmosLib
 						vert.pos.x = radius * cos(yaw) * sin(pitch);
 						vert.pos.y = radius * cos(pitch);
 						vert.pos.z = radius * sin(yaw) * sin(pitch);
+
+						vert.normal = ew::Normalize(vert.pos);
+
+						vert.uv = ew::Vec2((float)col / columns, ( ( (float)row / columns ) - 1.0f) * -1 );
 
 						newSphere.vertices.push_back(vert);
 					}
@@ -227,7 +233,6 @@ namespace GizmosLib
 				}
 
 				//Sides
-				int columns = segments + 1;
 
 				//Need to skip the top & bottom rows, since we already wound those
 				for (int row = 1; row < (segments - 1); row++)
