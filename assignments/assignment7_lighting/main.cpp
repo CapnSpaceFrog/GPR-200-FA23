@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <ew/external/glad.h>
+#include <external/glad.h>
 #include <ew/ewMath/ewMath.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
@@ -21,11 +21,36 @@ void resetCamera(ew::Camera& camera, ew::CameraController& cameraController);
 int SCREEN_WIDTH = 1080;
 int SCREEN_HEIGHT = 720;
 
+const int MAX_LIGHTS = 4;
+
 float prevTime;
 ew::Vec3 bgColor = ew::Vec3(0.1f);
 
 ew::Camera camera;
 ew::CameraController cameraController;
+
+struct Light
+{
+	ew::Vec3 Position = ew::Vec3(0, 0, 0);
+	ew::Vec3 Color = ew::Vec3(0, 0, 0);
+};
+
+Light lights[4];
+
+struct
+{
+	int NumOfLights = 1;
+	bool OrbitLights = true;
+	float OrbitRadius = 0.5f;
+	bool GouraudShading = false;
+	bool BlinnPhong = false;
+
+	float Ambient = 0;
+	float Diffuse = 0;
+	float Specular = 0;
+	float Shininess = 2;
+
+} AppSettings;
 
 int main() {
 	printf("Initializing...");
@@ -58,8 +83,12 @@ int main() {
 	glCullFace(GL_BACK);
 	glEnable(GL_DEPTH_TEST);
 
+	//LIT SHADER
 	ew::Shader shader("assets/defaultLit.vert", "assets/defaultLit.frag");
 	unsigned int brickTexture = ew::loadTexture("assets/brick_color.jpg",GL_REPEAT,GL_LINEAR);
+
+	//UNLIT SHADER
+	ew::Shader unlitShader("assets/unLit.vert", "assets/unLit.frag");
 
 	//Create cube
 	ew::Mesh cubeMesh(ew::createCube(1.0f));
@@ -75,6 +104,9 @@ int main() {
 	planeTransform.position = ew::Vec3(0, -1.0, 0);
 	sphereTransform.position = ew::Vec3(-1.5f, 0.0f, 0.0f);
 	cylinderTransform.position = ew::Vec3(1.5f, 0.0f, 0.0f);
+
+	ew::Transform lightTransforms[MAX_LIGHTS];
+	ew::Mesh lightMeshes[MAX_LIGHTS] = { ew::Mesh(ew::createSphere(1.0f, 8)), ew::Mesh(ew::createSphere(1.0f, 8)), ew::Mesh(ew::createSphere(1.0f, 8)), ew::Mesh(ew::createSphere(1.0f, 8)) };
 
 	resetCamera(camera,cameraController);
 
@@ -92,6 +124,13 @@ int main() {
 		//RENDER
 		glClearColor(bgColor.x, bgColor.y,bgColor.z,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//Update our light properties
+		for (int i = 0; i < AppSettings.NumOfLights; i++)
+		{
+			shader.setVec3("_Light[" + std::to_string(i) + "].pos", lights[i].Position);
+			shader.setVec3("_Light[" + std::to_string(i) + "].color", lights[i].Color);
+		}
 
 		shader.use();
 		glBindTexture(GL_TEXTURE_2D, brickTexture);
@@ -111,7 +150,22 @@ int main() {
 		shader.setMat4("_Model", cylinderTransform.getModelMatrix());
 		cylinderMesh.draw();
 
-		//TODO: Render point lights
+		//Render point lights
+
+		//Draw the lights and set their default unlit color
+		unlitShader.use();
+		unlitShader.setMat4("_ViewProjection", camera.ProjectionMatrix() * camera.ViewMatrix());
+
+		for (int i = 0; i < AppSettings.NumOfLights; i++)
+		{
+			//Draw the light
+			lightTransforms[i].position = lights[i].Position;
+			lightTransforms[i].scale = 0.5f;
+
+			unlitShader.setMat4("_Model", lightTransforms[i].getModelMatrix());
+			unlitShader.setVec3("_Color", lights[i].Color);
+			lightMeshes[i].draw();
+		}
 
 		//Render UI
 		{
@@ -140,6 +194,36 @@ int main() {
 			}
 
 			ImGui::ColorEdit3("BG color", &bgColor.x);
+
+			ImGui::DragInt("Num Lights", &AppSettings.NumOfLights, 1.0f, 0.0f, MAX_LIGHTS);
+
+			ImGui::Checkbox("Orbit Lights", &AppSettings.OrbitLights);
+			ImGui::DragFloat("Orbit Radius", &AppSettings.OrbitRadius, 0.05f, 0.5f);
+
+			ImGui::Checkbox("Gouraud Shading", &AppSettings.GouraudShading);
+			ImGui::Checkbox("Blinn-Phong", &AppSettings.GouraudShading);
+
+			for (int i = 0; i < AppSettings.NumOfLights; i++)
+			{
+				ImGui::PushID(i);
+
+				if (ImGui::CollapsingHeader("Light"))
+				{
+					ImGui::DragFloat3("Position", &lights[i].Position.x, 0.1f);
+					ImGui::ColorEdit3("Color", &lights[i].Color.x, 0.1f);
+				}
+
+				ImGui::PopID();
+			}
+
+			if (ImGui::CollapsingHeader("Material"))
+			{
+				ImGui::DragFloat("AmbientK", &AppSettings.Ambient, 0.05f, 0.0f, 1.0f);
+				ImGui::DragFloat("DiffuseK", &AppSettings.Diffuse, 0.05f, 0.0f, 1.0f);
+				ImGui::DragFloat("SpecularK", &AppSettings.Specular, 0.05f, 0.0f, 1.0f);
+				ImGui::DragFloat("Shininess", &AppSettings.Shininess, 0.1f, 2.0f);
+			}
+
 			ImGui::End();
 			
 			ImGui::Render();
