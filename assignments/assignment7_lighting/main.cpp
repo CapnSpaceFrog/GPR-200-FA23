@@ -32,7 +32,7 @@ ew::CameraController cameraController;
 struct Light
 {
 	ew::Vec3 Position = ew::Vec3(0, 0, 0);
-	ew::Vec3 Color = ew::Vec3(0, 0, 0);
+	ew::Vec3 Color = ew::Vec3(1, 1, 1);
 };
 
 Light lights[4];
@@ -41,7 +41,7 @@ struct
 {
 	int NumOfLights = 1;
 	bool OrbitLights = true;
-	float OrbitRadius = 0.5f;
+	float OrbitRadius = 2.0f;
 	bool GouraudShading = false;
 	bool BlinnPhong = false;
 
@@ -125,13 +125,6 @@ int main() {
 		glClearColor(bgColor.x, bgColor.y,bgColor.z,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//Update our light properties
-		for (int i = 0; i < AppSettings.NumOfLights; i++)
-		{
-			shader.setVec3("_Light[" + std::to_string(i) + "].pos", lights[i].Position);
-			shader.setVec3("_Light[" + std::to_string(i) + "].color", lights[i].Color);
-		}
-
 		shader.use();
 		glBindTexture(GL_TEXTURE_2D, brickTexture);
 		shader.setInt("_Texture", 0);
@@ -150,6 +143,20 @@ int main() {
 		shader.setMat4("_Model", cylinderTransform.getModelMatrix());
 		cylinderMesh.draw();
 
+		//Update our light properties
+		for (int i = 0; i < AppSettings.NumOfLights; i++)
+		{
+			shader.setVec3("_Lights[" + std::to_string(i) + "].pos", lightTransforms[i].position);
+			shader.setVec3("_Lights[" + std::to_string(i) + "].color", lights[i].Color);
+		}
+
+		shader.setVec3("uCameraPos", camera.position);
+
+		shader.setFloat("uAmbient", AppSettings.Ambient);
+		shader.setFloat("uDiffuse", AppSettings.Diffuse);
+		shader.setFloat("uSpecular", AppSettings.Specular);
+		shader.setFloat("uShininess", AppSettings.Shininess);
+
 		//Render point lights
 
 		//Draw the lights and set their default unlit color
@@ -159,7 +166,7 @@ int main() {
 		for (int i = 0; i < AppSettings.NumOfLights; i++)
 		{
 			//Draw the light
-			lightTransforms[i].position = lights[i].Position;
+			lightTransforms[i].position = ew::Vec3(cos(i * (2 * ew::PI / 4) + time) * AppSettings.OrbitRadius, 2, -sin(i * (2 * ew::PI / 4) + time) * AppSettings.OrbitRadius);
 			lightTransforms[i].scale = 0.5f;
 
 			unlitShader.setMat4("_Model", lightTransforms[i].getModelMatrix());
