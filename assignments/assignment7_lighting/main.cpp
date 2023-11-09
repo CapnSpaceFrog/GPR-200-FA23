@@ -45,6 +45,7 @@ struct
 	bool GouraudShading = false;
 	bool BlinnPhong = false;
 
+	ew::Vec3 AmbientLightColor = ew::Vec3(1, 1, 1);
 	float Ambient = 0;
 	float Diffuse = 0;
 	float Specular = 0;
@@ -150,6 +151,7 @@ int main() {
 			shader.setVec3("_Lights[" + std::to_string(i) + "].color", lights[i].Color);
 		}
 
+		shader.setVec3("uAmbientLightColor", AppSettings.AmbientLightColor);
 		shader.setVec3("uCameraPos", camera.position);
 
 		shader.setFloat("uAmbient", AppSettings.Ambient);
@@ -157,8 +159,11 @@ int main() {
 		shader.setFloat("uSpecular", AppSettings.Specular);
 		shader.setFloat("uShininess", AppSettings.Shininess);
 
-		//Render point lights
+		shader.setInt("uActiveLights", AppSettings.NumOfLights);
 
+		shader.setInt("uBlinnPhongSpec", AppSettings.BlinnPhong);
+
+		//Render point lights
 		//Draw the lights and set their default unlit color
 		unlitShader.use();
 		unlitShader.setMat4("_ViewProjection", camera.ProjectionMatrix() * camera.ViewMatrix());
@@ -208,7 +213,7 @@ int main() {
 			ImGui::DragFloat("Orbit Radius", &AppSettings.OrbitRadius, 0.05f, 0.5f);
 
 			ImGui::Checkbox("Gouraud Shading", &AppSettings.GouraudShading);
-			ImGui::Checkbox("Blinn-Phong", &AppSettings.GouraudShading);
+			ImGui::Checkbox("Blinn-Phong", &AppSettings.BlinnPhong);
 
 			for (int i = 0; i < AppSettings.NumOfLights; i++)
 			{
@@ -225,10 +230,11 @@ int main() {
 
 			if (ImGui::CollapsingHeader("Material"))
 			{
+				ImGui::ColorEdit3("Ambient Color", &AppSettings.AmbientLightColor.x);
 				ImGui::DragFloat("AmbientK", &AppSettings.Ambient, 0.05f, 0.0f, 1.0f);
 				ImGui::DragFloat("DiffuseK", &AppSettings.Diffuse, 0.05f, 0.0f, 1.0f);
 				ImGui::DragFloat("SpecularK", &AppSettings.Specular, 0.05f, 0.0f, 1.0f);
-				ImGui::DragFloat("Shininess", &AppSettings.Shininess, 0.1f, 2.0f);
+				ImGui::DragFloat("Shininess", &AppSettings.Shininess, 0.1f, 2.0f, 256.0f);
 			}
 
 			ImGui::End();
