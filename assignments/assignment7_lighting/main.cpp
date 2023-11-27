@@ -33,6 +33,7 @@ struct Light
 {
 	ew::Vec3 Position = ew::Vec3(0, 0, 0);
 	ew::Vec3 Color = ew::Vec3(1, 1, 1);
+	ew::Transform Transform;
 };
 
 Light lights[4];
@@ -42,7 +43,6 @@ struct
 	int NumOfLights = 1;
 	bool OrbitLights = true;
 	float OrbitRadius = 2.0f;
-	bool GouraudShading = false;
 	bool BlinnPhong = false;
 
 	ew::Vec3 AmbientLightColor = ew::Vec3(1, 1, 1);
@@ -106,7 +106,6 @@ int main() {
 	sphereTransform.position = ew::Vec3(-1.5f, 0.0f, 0.0f);
 	cylinderTransform.position = ew::Vec3(1.5f, 0.0f, 0.0f);
 
-	ew::Transform lightTransforms[MAX_LIGHTS];
 	ew::Mesh lightMeshes[MAX_LIGHTS] = { ew::Mesh(ew::createSphere(1.0f, 8)), ew::Mesh(ew::createSphere(1.0f, 8)), ew::Mesh(ew::createSphere(1.0f, 8)), ew::Mesh(ew::createSphere(1.0f, 8)) };
 
 	resetCamera(camera,cameraController);
@@ -147,7 +146,7 @@ int main() {
 		//Update our light properties
 		for (int i = 0; i < AppSettings.NumOfLights; i++)
 		{
-			shader.setVec3("_Lights[" + std::to_string(i) + "].pos", lightTransforms[i].position);
+			shader.setVec3("_Lights[" + std::to_string(i) + "].pos", lights[i].Transform.position);
 			shader.setVec3("_Lights[" + std::to_string(i) + "].color", lights[i].Color);
 		}
 
@@ -170,11 +169,19 @@ int main() {
 
 		for (int i = 0; i < AppSettings.NumOfLights; i++)
 		{
-			//Draw the light
-			lightTransforms[i].position = ew::Vec3(cos(i * (2 * ew::PI / 4) + time) * AppSettings.OrbitRadius, 2, -sin(i * (2 * ew::PI / 4) + time) * AppSettings.OrbitRadius);
-			lightTransforms[i].scale = 0.5f;
+			lights[i].Transform.scale = 0.5f;
 
-			unlitShader.setMat4("_Model", lightTransforms[i].getModelMatrix());
+			//Draw the light
+			if (AppSettings.OrbitLights)
+			{
+				lights[i].Transform.position = ew::Vec3(cos(i * (2 * ew::PI / 4) + time) * AppSettings.OrbitRadius, 2, -sin(i * (2 * ew::PI / 4) + time) * AppSettings.OrbitRadius);
+			}
+			else
+			{
+				lights[i].Transform.position = lights->Position;
+			}
+
+			unlitShader.setMat4("_Model", lights[i].Transform.getModelMatrix());
 			unlitShader.setVec3("_Color", lights[i].Color);
 			lightMeshes[i].draw();
 		}
@@ -212,7 +219,6 @@ int main() {
 			ImGui::Checkbox("Orbit Lights", &AppSettings.OrbitLights);
 			ImGui::DragFloat("Orbit Radius", &AppSettings.OrbitRadius, 0.05f, 0.5f);
 
-			ImGui::Checkbox("Gouraud Shading", &AppSettings.GouraudShading);
 			ImGui::Checkbox("Blinn-Phong", &AppSettings.BlinnPhong);
 
 			for (int i = 0; i < AppSettings.NumOfLights; i++)
@@ -221,7 +227,17 @@ int main() {
 
 				if (ImGui::CollapsingHeader("Light"))
 				{
-					ImGui::DragFloat3("Position", &lights[i].Position.x, 0.1f);
+					if (AppSettings.OrbitLights)
+					{
+						//Display the position values of the lights
+						ImGui::Text("%f, %f, %f", lights[i].Position.x, lights[i].Position.y, lights[i].Position.z);
+					}
+					else
+					{
+						//Allow for editable light settings
+						ImGui::DragFloat3("Position", &lights[i].Position.x, 0.1f);
+					}
+					
 					ImGui::ColorEdit3("Color", &lights[i].Color.x, 0.1f);
 				}
 
