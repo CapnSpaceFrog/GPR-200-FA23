@@ -14,7 +14,7 @@ namespace GizmosLib
 			public:
 
 			private:
-				Sprite* sprites;
+				//Sprite* sprites;
 			};
 		}
 	}

@@ -1,10 +1,12 @@
 #version 450
 
+in vec2 UV;
+
 out vec4 FragColor;
 
-uniform vec3 _Color;
+uniform sampler2D uSpriteSheet;
 
 void main()
 {
-	FragColor = vec4(_Color, 1.0);
+	FragColor = texture(uSpriteSheet, UV);
 }

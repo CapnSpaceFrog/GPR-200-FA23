@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <string>
 
 #include <external/glad.h>
 #include <ew/ewMath/ewMath.h>
@@ -9,10 +10,11 @@
 #include <imgui_impl_opengl3.h>
 
 #include <ew/shader.h>
-#include <ew/texture.h>
 #include <ew/procGen.h>
 #include <ew/transform.h>
 
+#include "GizmosLib/OpenGL/glHelpers.h"
+#include "GizmosLib/Sprite/Sprite.h"
 #include "GizmosLib/OpenGL/glHelpers.h"
 
 int SCREEN_WIDTH = 1080;
@@ -66,11 +68,21 @@ int main()
 
 	//Defult Shader
 	ew::Shader defaultUnlit("assets/unLit.vert", "assets/unLit.frag");
-	unsigned int spriteSheet = ew::loadTexture("assets/spritesheet.jpg", GL_REPEAT, GL_NEAREST);
 
-	//UNLIT SHADER
-	ew::Shader unlitShader("assets/unLit.vert", "assets/unLit.frag");
+	unsigned int MedievalSpriteSheet = GizmosLib::OpenGL::loadTexture("assets/Sprite Sheets/MedievalTownfolkSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
+	ew::Vec2 medievalSpriteSize = { 0, 0};
+	unsigned int ElementalSpriteSheet = GizmosLib::OpenGL::loadTexture("assets/Sprite Sheets/ElementalWarriorsSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
+	ew::Vec2 elementalSpriteSize = { 0, 0 };
+	unsigned int SteampunkSpriteSheet = GizmosLib::OpenGL::loadTexture("assets/Sprite Sheets/SteampunkCharacterSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
+	ew::Vec2 steampunkSpriteSize = { 0, 0 };
 
+	GizmosLib::OpenGL::Sprite::Sprite testSprite = GizmosLib::OpenGL::Sprite::Sprite(0, 96, 128, 128, 32);
+
+	testSprite.SetBoundTexture(ElementalSpriteSheet);
+
+	testSprite.SetShader(defaultUnlit);
+	
+	//SPRITE SETUP
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
@@ -83,11 +95,7 @@ int main()
 		glClearColor(bgColor.x, bgColor.y,bgColor.z,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		defaultUnlit.use();
-		glBindTexture(GL_TEXTURE_2D, spriteSheet);
-		defaultUnlit.setInt("_Texture", 0);
-
-
+		testSprite.Draw(ew::DrawMode::TRIANGLES);
 
 		//Render UI
 		{

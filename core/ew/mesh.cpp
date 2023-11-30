@@ -6,11 +6,13 @@
 #include "ewMath/ewMath.h"
 #include "external/glad.h"
 
-namespace ew {
+namespace ew
+{
 	Mesh::Mesh(const MeshData& meshData)
 	{
 		load(meshData);
 	}
+
 	void Mesh::load(const MeshData& meshData)
 	{
 		if (!m_initialized) {

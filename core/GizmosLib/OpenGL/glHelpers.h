@@ -2,6 +2,7 @@
 #define GL_HELPERS
 
 #include <string>
+#include <ew/ewMath/ewMath.h>
 #include <external/glad.h>
 #include <GLFW/glfw3.h>
 
