@@ -11,11 +11,11 @@
 
 #include <ew/shader.h>
 #include <ew/procGen.h>
-#include <ew/transform.h>
 
 #include "GizmosLib/OpenGL/glHelpers.h"
 #include "GizmosLib/Sprite/Sprite.h"
 #include "GizmosLib/OpenGL/glHelpers.h"
+#include "GizmosLib/Math/transformations.h"
 
 int SCREEN_WIDTH = 1080;
 int SCREEN_HEIGHT = 720;
@@ -25,7 +25,10 @@ ew::Vec3 bgColor = ew::Vec3(0.1f);
 
 struct
 {
-
+	float OrthoHeight = 1;
+	float AsepctRatio = ( (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT);
+	float NearPlane = 0.1f;
+	float FarPlane = 10.0f;
 } AppSettings;
 
 int main()
@@ -65,9 +68,13 @@ int main()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Defult Shader
 	ew::Shader defaultUnlit("assets/unLit.vert", "assets/unLit.frag");
+
+	GizmosLib::Math::Transform::Transform test;
 
 	unsigned int MedievalSpriteSheet = GizmosLib::OpenGL::loadTexture("assets/Sprite Sheets/MedievalTownfolkSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
 	ew::Vec2 medievalSpriteSize = { 0, 0};
@@ -76,7 +83,7 @@ int main()
 	unsigned int SteampunkSpriteSheet = GizmosLib::OpenGL::loadTexture("assets/Sprite Sheets/SteampunkCharacterSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
 	ew::Vec2 steampunkSpriteSize = { 0, 0 };
 
-	GizmosLib::OpenGL::Sprite::Sprite testSprite = GizmosLib::OpenGL::Sprite::Sprite(0, 96, 128, 128, 32);
+	GizmosLib::OpenGL::Sprite::Sprite testSprite = GizmosLib::OpenGL::Sprite::Sprite(0, 0, 128, 128, 32);
 
 	testSprite.SetBoundTexture(ElementalSpriteSheet);
 
@@ -95,6 +102,11 @@ int main()
 		glClearColor(bgColor.x, bgColor.y,bgColor.z,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		defaultUnlit.use();
+		defaultUnlit.setMat4("_OrthoProjection", GizmosLib::Math::Camera::Orthographic(AppSettings.OrthoHeight, AppSettings.AsepctRatio, AppSettings.NearPlane, AppSettings.FarPlane));
+		defaultUnlit.setMat4("_Model", test.GetModelMatrix());
+		defaultUnlit.setMat4("_View", GizmosLib::Math::Camera::LookAt(ew::Vec3(0, 0, 5), ew::Vec3(0, 0, 0), ew::Vec3(0, 1, 0)));
+
 		testSprite.Draw(ew::DrawMode::TRIANGLES);
 
 		//Render UI
@@ -103,12 +115,13 @@ int main()
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
 
-			ImGui::Begin("Animation Settings");
+			ImGui::Begin("Settings");
 
 			if (ImGui::CollapsingHeader("Camera"))
 			{
-				//ImGui::DragFloat3("Target", &camera.target.x, 0.1f);
-				//ImGui::Checkbox("Orthographic", &camera.orthographic);
+				ImGui::DragFloat("Orthographic Height", &AppSettings.OrthoHeight, 0.1f, 1.0f);
+				ImGui::DragFloat("Near Plane", &AppSettings.NearPlane, 0.1f, 0.1f);
+				ImGui::DragFloat("Far Plane", &AppSettings.FarPlane, 0.1f, 100.0f);
 			}
 
 			ImGui::End();
@@ -121,4 +134,11 @@ int main()
 	}
 
 	printf("Shutting down...");
+}
+
+void framebufferSizeCallback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+	SCREEN_HEIGHT = height;
+	SCREEN_WIDTH = width;
 }

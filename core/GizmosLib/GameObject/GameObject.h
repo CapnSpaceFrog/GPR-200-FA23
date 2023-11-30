@@ -1,6 +1,7 @@
 #ifndef _GAMEOBJECT_
 #define _GAMEOBJECT_
 
+#include <GizmosLib/Math/transformations.h>
 #include <GizmosLib/Animation/Animation.h>
 #include <ew/ewMath/vec2.h>
 
@@ -22,7 +23,7 @@ namespace GizmosLib
 
 			private:
 
-				
+				GizmosLib::Math::Transform::Transform transform;
 
 				Animation::Animation* activeAnim;
 

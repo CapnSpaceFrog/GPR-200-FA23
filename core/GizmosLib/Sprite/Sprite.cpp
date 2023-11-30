@@ -72,7 +72,6 @@ Sprite::Sprite(float cornerX, float cornerY, int texWidth, int texHeight, int pi
 
 	indices = {0, 1, 2, 2, 1, 3};
 
-
 	LoadVertexData();
 }
 
