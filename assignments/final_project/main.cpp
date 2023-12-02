@@ -9,16 +9,15 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include <ew/shader.h>
-#include <ew/procGen.h>
+#include "GizmosLib/OpenGL/Utility/glHelpers.h"
+#include "GizmosLib/OpenGL/Core/Shaders/shaderProgram.h"
+#include "GizmosLib/OpenGL/Core/Sprites/sprite.h"
+#include "GizmosLib/Transforms/Object/transforms.h"
+#include "GizmosLib/Transforms/Camera/camera.h"
 
-#include "GizmosLib/OpenGL/glHelpers.h"
-#include "GizmosLib/Sprite/Sprite.h"
-#include "GizmosLib/OpenGL/glHelpers.h"
-#include "GizmosLib/Math/transformations.h"
-
-int SCREEN_WIDTH = 1080;
-int SCREEN_HEIGHT = 720;
+using namespace GizmosLib::Transforms;
+using namespace GizmosLib::OpenGL::Core;
+using namespace GizmosLib::OpenGL::Utility;
 
 float prevTime;
 ew::Vec3 bgColor = ew::Vec3(0.1f);
@@ -26,7 +25,6 @@ ew::Vec3 bgColor = ew::Vec3(0.1f);
 struct
 {
 	float OrthoHeight = 1;
-	float AsepctRatio = ( (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT);
 	float NearPlane = 0.1f;
 	float FarPlane = 10.0f;
 } AppSettings;
@@ -41,7 +39,7 @@ int main()
 		return 1;
 	}
 
-	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Camera", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(GizmosLib::OpenGL::Utility::SCREEN_WIDTH, GizmosLib::OpenGL::Utility::SCREEN_HEIGHT, "Camera", NULL, NULL);
 	
 	if (window == NULL)
 	{
@@ -50,7 +48,7 @@ int main()
 	}
 
 	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, GizmosLib::OpenGL::framebufferSizeCallback);
+	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
 	if (!gladLoadGL(glfwGetProcAddress))
 	{
@@ -72,18 +70,17 @@ int main()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Defult Shader
-	ew::Shader defaultUnlit("assets/unLit.vert", "assets/unLit.frag");
+	ShaderProgram defaultUnlit("assets/unLit.vert", "assets/unLit.frag");
 
-	GizmosLib::Math::Transform::Transform test;
-
-	unsigned int MedievalSpriteSheet = GizmosLib::OpenGL::loadTexture("assets/Sprite Sheets/MedievalTownfolkSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
+	unsigned int MedievalSpriteSheet = GizmosLib::OpenGL::Utility::loadTexture("assets/Sprite Sheets/MedievalTownfolkSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
 	ew::Vec2 medievalSpriteSize = { 0, 0};
-	unsigned int ElementalSpriteSheet = GizmosLib::OpenGL::loadTexture("assets/Sprite Sheets/ElementalWarriorsSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
+	unsigned int ElementalSpriteSheet = GizmosLib::OpenGL::Utility::loadTexture("assets/Sprite Sheets/ElementalWarriorsSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
 	ew::Vec2 elementalSpriteSize = { 0, 0 };
-	unsigned int SteampunkSpriteSheet = GizmosLib::OpenGL::loadTexture("assets/Sprite Sheets/SteampunkCharacterSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
+	unsigned int SteampunkSpriteSheet = GizmosLib::OpenGL::Utility::loadTexture("assets/Sprite Sheets/SteampunkCharacterSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
 	ew::Vec2 steampunkSpriteSize = { 0, 0 };
 
-	GizmosLib::OpenGL::Sprite::Sprite testSprite = GizmosLib::OpenGL::Sprite::Sprite(0, 0, 128, 128, 32);
+
+	Sprite testSprite = Sprite(0, 0, 128, 128, 32);
 
 	testSprite.SetBoundTexture(ElementalSpriteSheet);
 
@@ -102,12 +99,17 @@ int main()
 		glClearColor(bgColor.x, bgColor.y,bgColor.z,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		defaultUnlit.use();
-		defaultUnlit.setMat4("_OrthoProjection", GizmosLib::Math::Camera::Orthographic(AppSettings.OrthoHeight, AppSettings.AsepctRatio, AppSettings.NearPlane, AppSettings.FarPlane));
-		defaultUnlit.setMat4("_Model", test.GetModelMatrix());
-		defaultUnlit.setMat4("_View", GizmosLib::Math::Camera::LookAt(ew::Vec3(0, 0, 5), ew::Vec3(0, 0, 0), ew::Vec3(0, 1, 0)));
+		defaultUnlit.MakeActive();
 
-		testSprite.Draw(ew::DrawMode::TRIANGLES);
+		defaultUnlit.SetUniformMatrix("_OrthoProjection", Orthographic(AppSettings.OrthoHeight,
+			((float)GizmosLib::OpenGL::Utility::SCREEN_WIDTH / (float)GizmosLib::OpenGL::Utility::SCREEN_HEIGHT),
+			AppSettings.NearPlane,
+			AppSettings.FarPlane));
+
+		//defaultUnlit.SetUniformMatrix("_Model", testSprite.GetModelMatrix());
+		defaultUnlit.SetUniformMatrix("_View", LookAt(ew::Vec3(0, 0, 5), ew::Vec3(0, 0, 0), ew::Vec3(0, 1, 0)));
+
+		testSprite.Draw();
 
 		//Render UI
 		{
@@ -134,11 +136,4 @@ int main()
 	}
 
 	printf("Shutting down...");
-}
-
-void framebufferSizeCallback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-	SCREEN_HEIGHT = height;
-	SCREEN_WIDTH = width;
 }

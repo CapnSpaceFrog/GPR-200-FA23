@@ -1,14 +1,17 @@
 #ifndef _SPRITE_
 #define _SPRITE_
 
+#include "GizmosLib/OpenGL/Core/Shaders/shaderProgram.h"
 #include <ew/mesh.h>
-#include <ew/shader.h>
+#include <vector>
+
+using namespace GizmosLib::OpenGL::Core;
 
 namespace GizmosLib
 {
 	namespace OpenGL
 	{
-		namespace Sprite
+		namespace Core
 		{
 			class Sprite
 			{
@@ -20,9 +23,9 @@ namespace GizmosLib
 
 				void SetBoundTexture(unsigned int texID);
 
-				void SetShader(ew::Shader &shader);
+				void SetShader(ShaderProgram& shader);
 
-				void Draw(ew::DrawMode mode);
+				void Draw();
 
 				unsigned int GetBoundTex() { return _TEX; }
 
@@ -39,7 +42,7 @@ namespace GizmosLib
 
 				bool _initialized = false;
 
-				ew::Shader* _shaderProg;
+				ShaderProgram* _shaderProg;
 
 				std::vector<ew::Vertex> vertices;
 				std::vector<unsigned int> indices;

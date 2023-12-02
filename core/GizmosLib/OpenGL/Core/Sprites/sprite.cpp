@@ -1,11 +1,12 @@
 //This Sprite class is a spin on mesh.h from Eric Winebrenner
 
-#include "GizmosLib/Sprite/Sprite.h"
+#include "GizmosLib/OpenGL/Core/Sprites/sprite.h"
+#include "GizmosLib/OpenGL/Core/Shaders/shaderProgram.h"
 #include <external/glad.h>
 #include <ew/ewMath/ewMath.h>
 #include <ew/mesh.h>
 
-using namespace GizmosLib::OpenGL::Sprite;
+using namespace GizmosLib::OpenGL::Core;
 
 void Sprite::Initialize()
 {
@@ -100,12 +101,12 @@ void Sprite::SetBoundTexture(unsigned int texID)
 	_TEX = texID;
 }
 
-void Sprite::SetShader(ew::Shader& shader)
+void Sprite::SetShader(ShaderProgram &shader)
 {
 	_shaderProg = &shader;
 }
 
-void Sprite::Draw(ew::DrawMode mode)
+void Sprite::Draw()
 {
 	if (!_initialized)
 		return;
@@ -113,15 +114,18 @@ void Sprite::Draw(ew::DrawMode mode)
 	glBindVertexArray(_VAO);
 
 	if (_shaderProg == nullptr)
+	{
+		//TODO: Logging
 		return;
+	}
 	else
-		_shaderProg->use();
+		_shaderProg->MakeActive();
 
 	//Is binding to GL_TEX0 bad or can I assume I'm using this as the active texture slot?
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, _TEX);
 
-	_shaderProg->setInt("uSpriteSheet", 0);
+	_shaderProg->SetUniform1i("uSpriteSheet", 0);
 
 	glDrawElements(GL_TRIANGLES, _numOfIndices, GL_UNSIGNED_INT, NULL);
 		

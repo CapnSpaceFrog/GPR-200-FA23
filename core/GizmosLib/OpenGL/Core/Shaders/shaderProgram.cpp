@@ -1,4 +1,4 @@
-#include "GizmosLib/OpenGL/shaderProgram.h"
+#include "GizmosLib/OpenGL/Core/Shaders/shaderProgram.h"
 #include <external/glad.h>
 #include <iostream>
 #include <string>
@@ -6,7 +6,7 @@
 #include <sstream>
 #include <ew/ewMath/mat4.h>
 
-using namespace GizmosLib::OpenGL::Shaders;
+using namespace GizmosLib::OpenGL::Core;
 
 //Read shader source code from file, compile, then test compilation
 //Create a shader program and attach vert and frag shaders then link together & check for errors
@@ -145,5 +145,5 @@ void ShaderProgram::Delete()
 //DESTRUCTOR
 ShaderProgram::~ShaderProgram()
 {
-
+	Delete();
 }

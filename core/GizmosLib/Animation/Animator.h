@@ -1,7 +1,7 @@
 #ifndef _ANIMATOR_
 #define _ANIMATOR_
 
-#include <GizmosLib/Sprite/Sprite.h>
+#include <GizmosLib/OpenGL/Core/Sprites/sprite.h>
 
 namespace GizmosLib
 {

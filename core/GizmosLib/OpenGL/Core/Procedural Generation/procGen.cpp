@@ -1,11 +1,11 @@
-#include <GizmosLib/OpenGL/procGen.h>
+#include <GizmosLib/OpenGL/Core/Procedural Generation/procGen.h>
 #include <ew/mesh.h>
 
 namespace GizmosLib
 {
 	namespace OpenGL
 	{
-		namespace Procedural
+		namespace Core
 		{
 			ew::MeshData createPlane(float width, float height, int subdivisions)
 			{

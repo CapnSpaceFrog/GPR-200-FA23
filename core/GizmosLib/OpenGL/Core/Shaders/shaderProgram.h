@@ -1,14 +1,14 @@
 #ifndef SHADER_CLASS
 #define SHADER_CLASS
 
-#include "GizmosLib/Math/vector.h"
+#include "GizmosLib/Math/Vector/vector.h"
 #include <ew/ewMath/mat4.h>
 
 using namespace GizmosLib::Math;
 
 namespace GizmosLib { namespace OpenGL 
 {
-	namespace Shaders
+	namespace Core
 	{
 		class ShaderProgram
 		{

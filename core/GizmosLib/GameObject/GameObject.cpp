@@ -1,7 +1,7 @@
 #include "GameObject.h"
 #include <external/glad.h>
 
-using namespace GizmosLib::OpenGL::GameObject;
+using namespace GizmosLib::OpenGL::Core;
 
 GameObject::GameObject(int cornerX, int cornerY, int spriteWidth, int spriteHeight)
 {
