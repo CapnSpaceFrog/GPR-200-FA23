@@ -8,10 +8,11 @@
 
 using namespace GizmosLib::OpenGL::Core;
 
-Sprite::Sprite(ew::Vec2 spriteSheetCorner, ew::Vec2 texDimensions , int pixels, unsigned int tex)
+Sprite::Sprite(Texture& tex, ew::Vec2 sourceXY, int pixels)
 {
-	//cornerX & cornerY siginify the x,y of the bottom left corner of the UV coordinate for a sprite
-	//width & height denote the offset between future sprites
+	_tex = &tex;
+	_sourceXY = sourceXY;
+	_pixels = pixels;
 
 	ew::Vec2 bottomLeft;
 	bottomLeft = ew::Vec2(spriteSheetCorner.x / texDimensions.x, (spriteSheetCorner.y / texDimensions.y));
@@ -26,11 +27,19 @@ Sprite::Sprite(ew::Vec2 spriteSheetCorner, ew::Vec2 texDimensions , int pixels, 
 	topRight = ew::Vec2(((spriteSheetCorner.x + pixels) / texDimensions.x), ((spriteSheetCorner.y + pixels) / texDimensions.y));
 
 	UV = { bottomLeft, bottomRight, topLeft, topRight };
-
-	_TEX = tex;
 }
 
-void Sprite::SetBoundTexture(unsigned int texID)
+void Sprite::SetBoundTex(Texture& newTex)
 {
-	_TEX = texID;
+	_tex = &newTex;
+}
+
+Texture& Sprite::GetBoundTex()
+{
+	return _tex;
+}
+
+bool Sprite::Render()
+{
+	//Call SpriteBatcher.Add()
 }

@@ -1,8 +1,8 @@
 #ifndef _SPRITE_
 #define _SPRITE_
 
-#include "GizmosLib/OpenGL/Core/Shaders/shaderProgram.h"
-#include <ew/mesh.h>
+#include <GizmosLib/OpenGL/Core/Texture/texture.h>
+#include <ew/ewMath/ewMath.h>
 #include <vector>
 
 using namespace GizmosLib::OpenGL::Core;
@@ -17,20 +17,27 @@ namespace GizmosLib
 			{
 			public:
 
-				Sprite(ew::Vec2 spriteSheetCorner, ew::Vec2 texDimensions, int pixels, unsigned int tex);
+				Sprite(Texture& tex, ew::Vec2 sourceXY, int pixels);
 
-				void SetBoundTexture(unsigned int texID);
+				void SetBoundTex(unsigned int texID);
 
-				unsigned int GetBoundTex() { return _TEX; }
+				unsigned int GetBoundTex();
+
+				bool Render();
 
 				std::vector<ew::Vec2> UV;
 
 			private:
-				unsigned int _TEX;
+				Texture* _tex;
+				ew::Vec2 _sourceXY;
+				int _pixels;
+			};
 
-				ew::Vec2 _corner;
-				ew::Vec2 _texDimensions;
-				int _pixelDimensions;
+			struct SpriteData
+			{
+				ew::Vec3 VertPos;
+				ew::Vec2 spriteTexCorner;
+				ew::Vec2 texSize;
 			};
 		}
 	}

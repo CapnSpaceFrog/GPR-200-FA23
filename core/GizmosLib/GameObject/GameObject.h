@@ -22,7 +22,7 @@ namespace GizmosLib
 
 				GameObject();
 
-				void SetShader(ShaderProgram& shader);
+				GameObject(Sprite& sprite, Animation& animation);
 
 				void SetDefaultSprite(Sprite& sprite);
 
@@ -40,20 +40,8 @@ namespace GizmosLib
 				void LoadSpriteUV(const std::vector<ew::Vec2>& uv);
 				
 				Sprite* _defaultSprite;
-				ShaderProgram* _attachedShader;
 
 				Animation* _activeAnimation;
-
-				//OpenGL
-				unsigned int _VAO;
-				unsigned int _VBO;
-				unsigned int _EBO;
-
-				std::vector<ew::Vertex> vertices;
-				std::vector<unsigned int> indices;
-
-				int _numOfVerts;
-				int _numOfIndices;
 			};
 		}
 	}

@@ -107,10 +107,6 @@ int main()
 	testObj2.SetDefaultSprite(mysteryMan1);
 	testObj2.SetActiveAnimation(mysteryManIdle);
 
-	testObj.SetShader(defaultUnlit);
-
-	testObj2.SetShader(defaultUnlit);
-
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
@@ -136,6 +132,8 @@ int main()
 		testObj.Render();
 		
 		testObj2.Render();
+
+		//Close spritebatcher here
 
 		//Render UI
 		{

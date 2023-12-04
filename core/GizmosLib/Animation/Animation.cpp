@@ -19,7 +19,7 @@ Animation::Animation(Sprite sprites[], int size, int fps, float length, bool loo
 	IsPlaying = false;
 }
 
-Sprite* Animation::Play()
+Sprite* Animation::Update()
 {
 	if (!IsPlaying)
 	{
