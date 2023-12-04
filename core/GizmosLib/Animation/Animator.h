@@ -7,7 +7,7 @@ namespace GizmosLib
 {
 	namespace OpenGL
 	{
-		namespace Animation
+		namespace Core
 		{
 			class Animator
 			{

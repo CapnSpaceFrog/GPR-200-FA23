@@ -8,125 +8,29 @@
 
 using namespace GizmosLib::OpenGL::Core;
 
-void Sprite::Initialize()
+Sprite::Sprite(ew::Vec2 spriteSheetCorner, ew::Vec2 texDimensions , int pixels, unsigned int tex)
 {
-	if (_initialized)
-		return;
-
-	//Generate a VAO for this Sprite
-	glGenVertexArrays(1, &_VAO);
-	glBindVertexArray(_VAO);
-
-	//Generate a VBO for the Sprite
-	glGenBuffers(1, &_VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-
-	glGenBuffers(1, &_EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
-
-	//Position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ew::Vertex), (const void*)offsetof(ew::Vertex, pos));
-	glEnableVertexAttribArray(0);
-
-	//Normal attribute
-	//Probably won't be using it but just in case I'm leaving it in
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(ew::Vertex), (const void*)offsetof(ew::Vertex, normal));
-	glEnableVertexAttribArray(1);
-
-	//UV attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(ew::Vertex), (const void*)(offsetof(ew::Vertex, uv)));
-	glEnableVertexAttribArray(2);
-
-	_shaderProg = nullptr;
-
-	_initialized = true;
-}
-
-Sprite::Sprite()
-{
-	Initialize();
-}
-
-Sprite::Sprite(float cornerX, float cornerY, int texWidth, int texHeight, int pixels)
-{
-	Initialize();
-
 	//cornerX & cornerY siginify the x,y of the bottom left corner of the UV coordinate for a sprite
 	//width & height denote the offset between future sprites
-	ew::Vertex bottomLeft;
-	bottomLeft.pos = { -1, -1, 0 };
-	bottomLeft.uv = ew::Vec2( cornerX / texWidth, ( cornerY / texHeight) );
 
-	ew::Vertex bottomRight;
-	bottomRight.pos = { 1, -1, 0 };
-	bottomRight.uv = ew::Vec2( ( ( cornerX+pixels ) / texWidth) , ( cornerY / texHeight) );
+	ew::Vec2 bottomLeft;
+	bottomLeft = ew::Vec2(spriteSheetCorner.x / texDimensions.x, (spriteSheetCorner.y / texDimensions.y));
 
-	ew::Vertex topLeft;
-	topLeft.pos = { -1, 1, 0 };
-	topLeft.uv = ew::Vec2((cornerX / texWidth), ( ( cornerY+pixels) / texHeight) );
+	ew::Vec2 bottomRight;
+	bottomRight = ew::Vec2(((spriteSheetCorner.x + pixels) / texDimensions.x), (spriteSheetCorner.y / texDimensions.y));
 
-	ew::Vertex topRight;
-	topRight.pos = { 1, 1, 0 };
-	topRight.uv = ew::Vec2(( (cornerX + pixels) / texWidth), ( ( cornerY+pixels) / texHeight) );
+	ew::Vec2 topLeft;
+	topLeft = ew::Vec2((spriteSheetCorner.x / texDimensions.x), ((spriteSheetCorner.y + pixels) / texDimensions.y));
 
-	vertices = {bottomLeft, bottomRight, topLeft, topRight};
+	ew::Vec2 topRight;
+	topRight = ew::Vec2(((spriteSheetCorner.x + pixels) / texDimensions.x), ((spriteSheetCorner.y + pixels) / texDimensions.y));
 
-	indices = {0, 1, 2, 2, 1, 3};
+	UV = { bottomLeft, bottomRight, topLeft, topRight };
 
-	LoadVertexData();
-}
-
-void Sprite::LoadVertexData()
-{
-	glBindVertexArray(_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
-
-	if (vertices.size() > 0)
-		glBufferData(GL_ARRAY_BUFFER, sizeof(ew::Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-
-	if (indices.size() > 0)
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW);
-
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	_numOfVerts = vertices.size();
-	_numOfIndices = indices.size();
+	_TEX = tex;
 }
 
 void Sprite::SetBoundTexture(unsigned int texID)
 {
 	_TEX = texID;
-}
-
-void Sprite::SetShader(ShaderProgram &shader)
-{
-	_shaderProg = &shader;
-}
-
-void Sprite::Draw()
-{
-	if (!_initialized)
-		return;
-
-	glBindVertexArray(_VAO);
-
-	if (_shaderProg == nullptr)
-	{
-		//TODO: Logging
-		return;
-	}
-	else
-		_shaderProg->MakeActive();
-
-	//Is binding to GL_TEX0 bad or can I assume I'm using this as the active texture slot?
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, _TEX);
-
-	_shaderProg->SetUniform1i("uSpriteSheet", 0);
-
-	glDrawElements(GL_TRIANGLES, _numOfIndices, GL_UNSIGNED_INT, NULL);
-		
 }

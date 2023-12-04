@@ -17,38 +17,20 @@ namespace GizmosLib
 			{
 			public:
 
-				Sprite();
-
-				Sprite(float cornerX, float cornerY, int texWidth, int texHeight, int pixels);
+				Sprite(ew::Vec2 spriteSheetCorner, ew::Vec2 texDimensions, int pixels, unsigned int tex);
 
 				void SetBoundTexture(unsigned int texID);
 
-				void SetShader(ShaderProgram& shader);
-
-				void Draw();
-
 				unsigned int GetBoundTex() { return _TEX; }
 
+				std::vector<ew::Vec2> UV;
+
 			private:
-				void Initialize();
-
-				void LoadVertexData();
-
-				unsigned int _VAO;
-				unsigned int _VBO;
-				unsigned int _EBO;
-				
 				unsigned int _TEX;
 
-				bool _initialized = false;
-
-				ShaderProgram* _shaderProg;
-
-				std::vector<ew::Vertex> vertices;
-				std::vector<unsigned int> indices;
-
-				int _numOfVerts;
-				int _numOfIndices;
+				ew::Vec2 _corner;
+				ew::Vec2 _texDimensions;
+				int _pixelDimensions;
 			};
 		}
 	}

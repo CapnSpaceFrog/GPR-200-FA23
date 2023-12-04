@@ -19,21 +19,41 @@ namespace GizmosLib
 			class GameObject
 			{
 			public:
+
+				GameObject();
+
+				void SetShader(ShaderProgram& shader);
+
+				void SetDefaultSprite(Sprite& sprite);
+
+				void SetActiveAnimation(Animation& animation);
+
+				bool Render();
+
 				Transform Transform;
 
-				Sprite Sprite;
-
-				GameObject(int uvCornerX, int uvCornerY, int width, int height);
-
-				bool Draw();
-
-				bool SwapActiveAnimation(Animation::AnimationTypes animType);
+				~GameObject();
 
 			private:
+				void Initialize();
+				
+				void LoadSpriteUV(const std::vector<ew::Vec2>& uv);
+				
+				Sprite* _defaultSprite;
+				ShaderProgram* _attachedShader;
 
-				Animation::Animation* activeAnim;
+				Animation* _activeAnimation;
 
-				Animation::Animation anims[Animation::AnimationTypes::Max];
+				//OpenGL
+				unsigned int _VAO;
+				unsigned int _VBO;
+				unsigned int _EBO;
+
+				std::vector<ew::Vertex> vertices;
+				std::vector<unsigned int> indices;
+
+				int _numOfVerts;
+				int _numOfIndices;
 			};
 		}
 	}

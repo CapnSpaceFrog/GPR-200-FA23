@@ -21,9 +21,11 @@ namespace GizmosLib
 
 		struct Transform
 		{
-			ew::Vec3 Position = ew::Vec3(0.0f, 0.0f, 0.0f);
-			ew::Vec3 Rotation = ew::Vec3(0.0f, 0.0f, 0.0f); //Euler Angles (degrees)
-			ew::Vec3 Scale = ew::Vec3(1.0f, 1.0f, 1.0f);
+			Transform();
+
+			ew::Vec3 Position;
+			ew::Vec3 Rotation; //Euler Angles (degrees)
+			ew::Vec3 Scale;
 
 			ew::Mat4 GetModelMatrix() const;
 		};

@@ -1,29 +1,37 @@
 #ifndef _ANIMATION_
 #define _ANIMATION_
 
+#include <GizmosLib/OpenGL/Core/Sprites/sprite.h>
+#include <vector>
+
 namespace GizmosLib
 {
 	namespace OpenGL
 	{
-		namespace Animation
+		namespace Core
 		{
-			enum AnimationTypes
-			{
-				Idle,
-				Walk,
-				Run,
-				Jump,
-				Max
-			};
-
 			class Animation
 			{
 			public:
+				Animation(Sprite sprites[], int size, int fps, float length, bool loop);
 
-				Animation();
+				Sprite* Play();
+
+				void Reset();
+
+				bool IsPlaying;
 
 			private:
-				//Does the animation hold the reference to the texture??
+				std::vector<Sprite> _sprites;
+
+				int _FPS;
+				float _length;
+				bool _loop;
+
+				float _timePerSprite;
+				int _currentSpriteIndex;
+
+				float _startTime;
 			};
 		}
 	}

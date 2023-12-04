@@ -64,6 +64,13 @@ namespace GizmosLib
 			);
 		}
 
+		Transform::Transform()
+		{
+			Position = ew::Vec3(0.0f, 0.0f, 0.0f);
+			Rotation = ew::Vec3(0.0f, 0.0f, 0.0f); //Euler Angles (degrees)
+			Scale = ew::Vec3(1.0f, 1.0f, 1.0f);
+		}
+
 		ew::Mat4 Transform::GetModelMatrix() const
 		{
 			ew::Mat4 R = RotateY(Rotation.y * ew::DEG2RAD) * RotateX(Rotation.x * ew::DEG2RAD) * RotateZ(Rotation.z * ew::DEG2RAD);

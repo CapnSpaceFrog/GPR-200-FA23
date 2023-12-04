@@ -14,6 +14,7 @@
 #include "GizmosLib/OpenGL/Core/Sprites/sprite.h"
 #include "GizmosLib/Transforms/Object/transforms.h"
 #include "GizmosLib/Transforms/Camera/camera.h"
+#include "GizmosLib/GameObject/gameObject.h"
 
 using namespace GizmosLib::Transforms;
 using namespace GizmosLib::OpenGL::Core;
@@ -69,28 +70,52 @@ int main()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	//Defult Shader
+	//Default Shader
 	ShaderProgram defaultUnlit("assets/unLit.vert", "assets/unLit.frag");
 
+	//Load Sprite Sheets (Should really become their own class called texture with some helper functions)
 	unsigned int MedievalSpriteSheet = GizmosLib::OpenGL::Utility::loadTexture("assets/Sprite Sheets/MedievalTownfolkSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
 	ew::Vec2 medievalSpriteSize = { 0, 0};
 	unsigned int ElementalSpriteSheet = GizmosLib::OpenGL::Utility::loadTexture("assets/Sprite Sheets/ElementalWarriorsSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
-	ew::Vec2 elementalSpriteSize = { 0, 0 };
+	ew::Vec2 elementalSpriteSize = { 128, 128 };
 	unsigned int SteampunkSpriteSheet = GizmosLib::OpenGL::Utility::loadTexture("assets/Sprite Sheets/SteampunkCharacterSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
-	ew::Vec2 steampunkSpriteSize = { 0, 0 };
+	ew::Vec2 steampunkSpriteSize = { 128, 128 };
 
+	//TESTING
+	Sprite priest1 = Sprite(ew::Vec2(0, 0), elementalSpriteSize, 32, ElementalSpriteSheet);
+	Sprite priest2 = Sprite(ew::Vec2(32, 0), elementalSpriteSize, 32, ElementalSpriteSheet);
+	Sprite priest3 = Sprite(ew::Vec2(64, 0), elementalSpriteSize, 32, ElementalSpriteSheet);
+	Sprite priest4 = Sprite(ew::Vec2(96, 0), elementalSpriteSize, 32, ElementalSpriteSheet);
 
-	Sprite testSprite = Sprite(0, 0, 128, 128, 32);
+	Sprite priestSprites[] = { priest1, priest2, priest3, priest4 };
+	Animation elementalPriestIdle = Animation(priestSprites, 4, 12, 3.2f, true);
 
-	testSprite.SetBoundTexture(ElementalSpriteSheet);
+	Sprite mysteryMan1 = Sprite(ew::Vec2(0, 96), steampunkSpriteSize, 32, SteampunkSpriteSheet);
+	Sprite mysteryMan2 = Sprite(ew::Vec2(32, 96), steampunkSpriteSize, 32, SteampunkSpriteSheet);
+	Sprite mysteryMan3 = Sprite(ew::Vec2(64, 96), steampunkSpriteSize, 32, SteampunkSpriteSheet);
+	Sprite mysteryMan4 = Sprite(ew::Vec2(96, 96), steampunkSpriteSize, 32, SteampunkSpriteSheet);
 
-	testSprite.SetShader(defaultUnlit);
+	Sprite mysteryManSprites[] = { mysteryMan1, mysteryMan2, mysteryMan3, mysteryMan4 };
+	Animation mysteryManIdle = Animation(mysteryManSprites, 4, 12, 5.0f, true);
 	
-	//SPRITE SETUP
+	GameObject testObj = GameObject();
+	GameObject testObj2 = GameObject();
+
+	testObj.SetDefaultSprite(priest1);
+	testObj.SetActiveAnimation(elementalPriestIdle);
+
+	testObj2.SetDefaultSprite(mysteryMan1);
+	testObj2.SetActiveAnimation(mysteryManIdle);
+
+	testObj.SetShader(defaultUnlit);
+
+	testObj2.SetShader(defaultUnlit);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
+		//Glfw returns seconds
 		float time = (float)glfwGetTime();
 		float deltaTime = time - prevTime;
 		prevTime = time;
@@ -106,10 +131,11 @@ int main()
 			AppSettings.NearPlane,
 			AppSettings.FarPlane));
 
-		//defaultUnlit.SetUniformMatrix("_Model", testSprite.GetModelMatrix());
 		defaultUnlit.SetUniformMatrix("_View", LookAt(ew::Vec3(0, 0, 5), ew::Vec3(0, 0, 0), ew::Vec3(0, 1, 0)));
 
-		testSprite.Draw();
+		testObj.Render();
+		
+		testObj2.Render();
 
 		//Render UI
 		{
