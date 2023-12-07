@@ -3,14 +3,9 @@
 
 using namespace GizmosLib::Engine::Core;
 
-Time::Time()
-{
-	if (Instance == nullptr)
-	{
-		Instance = new Time();
-		Instance->initialize();
-	}
-}
+float Time::_deltaTime = 0;
+float Time::_prevFrameTime = 0;
+float Time::_time = 0;
 
 void Time::Update()
 {
@@ -29,11 +24,4 @@ float Time::GetTime()
 float Time::GetDeltaTime()
 {
 	return _deltaTime;
-}
-
-void Time::initialize()
-{
-	_prevFrameTime = 0;
-	_deltaTime = 0;
-	_time = 0;
 }

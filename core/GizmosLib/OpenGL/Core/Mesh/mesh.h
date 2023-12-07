@@ -19,7 +19,6 @@ namespace GizmosLib
 			class Mesh
 			{
 			public:
-				Mesh();
 
 				std::vector<Vertex> Vertices;
 				std::vector<unsigned int> Indices;

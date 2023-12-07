@@ -12,9 +12,12 @@
 #include "GizmosLib/OpenGL/Utility/glHelpers.h"
 #include "GizmosLib/OpenGL/Core/Shaders/shaderProgram.h"
 #include "GizmosLib/OpenGL/Core/Sprites/sprite.h"
+#include <GizmosLib/OpenGL/SpriteBatcher/spriteBatcher.h>
 #include "GizmosLib/Transforms/Object/transforms.h"
 #include "GizmosLib/Transforms/Camera/camera.h"
 #include "GizmosLib/Engine/GameObject/gameObject.h"
+
+#include <GizmosLib/Engine/Time/time.h>
 
 using namespace GizmosLib::Transforms;
 using namespace GizmosLib::OpenGL::Core;
@@ -76,31 +79,36 @@ int main()
 	ShaderProgram defaultUnlit("assets/unLit.vert", "assets/unLit.frag");
 
 	//Load Sprite Sheets
-	Texture MedievalSpriteSheet = Texture("assets/Sprite Sheets/MedievalTownfolkSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT);
-	Texture ElementalSpriteSheet = Texture("assets/Sprite Sheets/ElementalWarriorsSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT);
-	Texture SteampunkSpriteSheet = Texture("assets/Sprite Sheets/SteampunkCharacterSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT);
+	Texture* MedievalSpriteSheet = new Texture("assets/Sprite Sheets/MedievalTownfolkSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT);
+	Texture* ElementalSpriteSheet = new Texture("assets/Sprite Sheets/ElementalWarriorsSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT);
+	Texture* SteampunkSpriteSheet = new Texture("assets/Sprite Sheets/SteampunkCharacterSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT);
 
 	//TESTING
-	Sprite priestSprites[] = {
-		Sprite(ElementalSpriteSheet, ew::Vec2(), 32),
-		Sprite(ElementalSpriteSheet, ew::Vec2(), 32),
-		Sprite(ElementalSpriteSheet,ew::Vec2(64, 0), 32),
-		Sprite(ElementalSpriteSheet, ew::Vec2(96, 0), 32),
+	Sprite* priestSprites[] = {
+		new Sprite(*ElementalSpriteSheet, ew::Vec2(0, 0), 32),
+		new Sprite(*ElementalSpriteSheet, ew::Vec2(32, 0), 32),
+		new Sprite(*ElementalSpriteSheet,ew::Vec2(64, 0), 32),
+		new Sprite(*ElementalSpriteSheet, ew::Vec2(96, 0), 32),
 	};
 	Animation elementalPriestIdle = Animation(priestSprites, 4, 12, 3.2f, true);
 
-	Sprite mysteryManSprites[] = {
-		Sprite(SteampunkSpriteSheet, ew::Vec2(0, 96), 32),
-		Sprite(SteampunkSpriteSheet, ew::Vec2(32, 96), 32),
-		Sprite(SteampunkSpriteSheet, ew::Vec2(64, 96), 32),
-		Sprite(SteampunkSpriteSheet, ew::Vec2(96, 96), 32),
+	Sprite* testSprite = new Sprite(*SteampunkSpriteSheet, ew::Vec2(0, 96), 32);
+
+	Sprite* mysteryManSprites[] = {
+		testSprite,
+		new Sprite(*SteampunkSpriteSheet, ew::Vec2(32, 96), 32),
+		new Sprite(*SteampunkSpriteSheet, ew::Vec2(64, 96), 32),
+		new Sprite(*SteampunkSpriteSheet, ew::Vec2(96, 96), 32),
 	};
 	Animation mysteryManIdle = Animation(mysteryManSprites, 4, 12, 5.0f, true);
 	
+	
+
 	GameObject testObj = GameObject();
 	GameObject testObj2 = GameObject();
 
 	testObj.SetActiveAnimation(elementalPriestIdle);
+	testObj.SetDefaultSprite(*testSprite);
 
 	testObj2.SetActiveAnimation(mysteryManIdle);
 
@@ -108,16 +116,16 @@ int main()
 	{
 		glfwPollEvents();
 
-		//Glfw returns seconds
-		float time = (float)glfwGetTime();
-		float deltaTime = time - prevTime;
-		prevTime = time;
+		//Update Global Time
+		Time::Update();
 
 		//RENDER BACKGROUND
 		glClearColor(bgColor.x, bgColor.y,bgColor.z,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		defaultUnlit.MakeActive();
+
+		defaultUnlit.SetUniformMatrix("_Model", testObj.Transform.GetModelMatrix());
 
 		defaultUnlit.SetUniformMatrix("_OrthoProjection", Orthographic(AppSettings.OrthoHeight,
 			((float)GizmosLib::OpenGL::Utility::SCREEN_WIDTH / (float)GizmosLib::OpenGL::Utility::SCREEN_HEIGHT),
@@ -126,11 +134,11 @@ int main()
 
 		defaultUnlit.SetUniformMatrix("_View", LookAt(ew::Vec3(0, 0, 5), ew::Vec3(0, 0, 0), ew::Vec3(0, 1, 0)));
 
-		testObj.Render();
-		
-		testObj2.Render();
+		defaultUnlit.SetUniform1i("uSpriteSheet", 0);
 
-		//Close spritebatcher here
+		testObj.Render();
+
+		SpriteBatcher::GetInstance().DrawBatch();
 
 		//Render UI
 		{

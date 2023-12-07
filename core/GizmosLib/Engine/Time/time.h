@@ -10,23 +10,21 @@ namespace GizmosLib
 			class Time
 			{
 			public:
-				static Time* Instance;
+				
 
-				Time();
+				static void Update();
 
-				void Update();
+				static float GetTime();
 
-				float GetTime();
-
-				float GetDeltaTime();
+				static float GetDeltaTime();
 
 			private:
-				void initialize();
+				Time();
 
-				float _time;
-				float _deltaTime;
+				static float _time;
+				static float _deltaTime;
 
-				float _prevFrameTime;
+				static float _prevFrameTime;
 			};
 		}
 	}

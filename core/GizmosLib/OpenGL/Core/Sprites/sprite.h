@@ -24,14 +24,13 @@ namespace GizmosLib
 
 				Texture& GetBoundTex();
 
-				bool Render(Mesh& mesh);
+				bool Render();
 
+				Mesh BoundMesh;
 			private:
 				Texture* _tex;
 				ew::Vec2 _sourceXY;
 				int _pixels;
-
-				std::vector<ew::Vec2> UV;
 			};
 		}
 	}

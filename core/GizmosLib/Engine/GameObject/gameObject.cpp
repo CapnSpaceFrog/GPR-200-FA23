@@ -11,12 +11,11 @@ GameObject::GameObject()
 	
 }
 
-GameObject::GameObject(Sprite& sprite, Animation& animation, Mesh& mesh)
+GameObject::GameObject(Sprite& sprite, Animation& animation)
 {
 	_defaultSprite = &sprite;
 	Transform = GizmosLib::Transforms::Transform();
 	_activeAnimation = &animation;
-	_mesh = &mesh;
 }
 
 void GameObject::SetDefaultSprite(Sprite& sprite)
@@ -37,12 +36,14 @@ bool GameObject::Render()
 		return false;
 	}
 
-	if (_activeAnimation == nullptr)
-		_defaultSprite->Render(*_mesh);
+	_defaultSprite->Render();
+
+	/*if (_activeAnimation == nullptr)
+		_defaultSprite->Render();
 	else
 	{
 		_activeAnimation->Update();
-	}
+	}*/
 
 	return true;
 }

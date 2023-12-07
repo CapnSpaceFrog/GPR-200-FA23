@@ -21,7 +21,7 @@ namespace GizmosLib
 			public:
 				GameObject();
 
-				GameObject(Sprite& sprite, Animation& animation, Mesh& mesh);
+				GameObject(Sprite& sprite, Animation& animation);
 
 				void SetDefaultSprite(Sprite& sprite);
 
@@ -37,10 +37,8 @@ namespace GizmosLib
 				void Initialize();
 				
 				void LoadSpriteUV(const std::vector<ew::Vec2>& uv);
-				
-				Mesh* _mesh;
-				Sprite* _defaultSprite;
 
+				Sprite* _defaultSprite;
 				Animation* _activeAnimation;
 			};
 		}
