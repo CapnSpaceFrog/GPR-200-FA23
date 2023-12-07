@@ -14,11 +14,13 @@
 #include "GizmosLib/OpenGL/Core/Sprites/sprite.h"
 #include "GizmosLib/Transforms/Object/transforms.h"
 #include "GizmosLib/Transforms/Camera/camera.h"
-#include "GizmosLib/GameObject/gameObject.h"
+#include "GizmosLib/Engine/GameObject/gameObject.h"
 
 using namespace GizmosLib::Transforms;
 using namespace GizmosLib::OpenGL::Core;
 using namespace GizmosLib::OpenGL::Utility;
+
+using namespace GizmosLib::Engine::Core;
 
 float prevTime;
 ew::Vec3 bgColor = ew::Vec3(0.1f);
@@ -73,38 +75,33 @@ int main()
 	//Default Shader
 	ShaderProgram defaultUnlit("assets/unLit.vert", "assets/unLit.frag");
 
-	//Load Sprite Sheets (Should really become their own class called texture with some helper functions)
-	unsigned int MedievalSpriteSheet = GizmosLib::OpenGL::Utility::loadTexture("assets/Sprite Sheets/MedievalTownfolkSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
-	ew::Vec2 medievalSpriteSize = { 0, 0};
-	unsigned int ElementalSpriteSheet = GizmosLib::OpenGL::Utility::loadTexture("assets/Sprite Sheets/ElementalWarriorsSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
-	ew::Vec2 elementalSpriteSize = { 128, 128 };
-	unsigned int SteampunkSpriteSheet = GizmosLib::OpenGL::Utility::loadTexture("assets/Sprite Sheets/SteampunkCharacterSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT);
-	ew::Vec2 steampunkSpriteSize = { 128, 128 };
+	//Load Sprite Sheets
+	Texture MedievalSpriteSheet = Texture("assets/Sprite Sheets/MedievalTownfolkSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT);
+	Texture ElementalSpriteSheet = Texture("assets/Sprite Sheets/ElementalWarriorsSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT);
+	Texture SteampunkSpriteSheet = Texture("assets/Sprite Sheets/SteampunkCharacterSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT);
 
 	//TESTING
-	Sprite priest1 = Sprite(ew::Vec2(0, 0), elementalSpriteSize, 32, ElementalSpriteSheet);
-	Sprite priest2 = Sprite(ew::Vec2(32, 0), elementalSpriteSize, 32, ElementalSpriteSheet);
-	Sprite priest3 = Sprite(ew::Vec2(64, 0), elementalSpriteSize, 32, ElementalSpriteSheet);
-	Sprite priest4 = Sprite(ew::Vec2(96, 0), elementalSpriteSize, 32, ElementalSpriteSheet);
-
-	Sprite priestSprites[] = { priest1, priest2, priest3, priest4 };
+	Sprite priestSprites[] = {
+		Sprite(ElementalSpriteSheet, ew::Vec2(), 32),
+		Sprite(ElementalSpriteSheet, ew::Vec2(), 32),
+		Sprite(ElementalSpriteSheet,ew::Vec2(64, 0), 32),
+		Sprite(ElementalSpriteSheet, ew::Vec2(96, 0), 32),
+	};
 	Animation elementalPriestIdle = Animation(priestSprites, 4, 12, 3.2f, true);
 
-	Sprite mysteryMan1 = Sprite(ew::Vec2(0, 96), steampunkSpriteSize, 32, SteampunkSpriteSheet);
-	Sprite mysteryMan2 = Sprite(ew::Vec2(32, 96), steampunkSpriteSize, 32, SteampunkSpriteSheet);
-	Sprite mysteryMan3 = Sprite(ew::Vec2(64, 96), steampunkSpriteSize, 32, SteampunkSpriteSheet);
-	Sprite mysteryMan4 = Sprite(ew::Vec2(96, 96), steampunkSpriteSize, 32, SteampunkSpriteSheet);
-
-	Sprite mysteryManSprites[] = { mysteryMan1, mysteryMan2, mysteryMan3, mysteryMan4 };
+	Sprite mysteryManSprites[] = {
+		Sprite(SteampunkSpriteSheet, ew::Vec2(0, 96), 32),
+		Sprite(SteampunkSpriteSheet, ew::Vec2(32, 96), 32),
+		Sprite(SteampunkSpriteSheet, ew::Vec2(64, 96), 32),
+		Sprite(SteampunkSpriteSheet, ew::Vec2(96, 96), 32),
+	};
 	Animation mysteryManIdle = Animation(mysteryManSprites, 4, 12, 5.0f, true);
 	
 	GameObject testObj = GameObject();
 	GameObject testObj2 = GameObject();
 
-	testObj.SetDefaultSprite(priest1);
 	testObj.SetActiveAnimation(elementalPriestIdle);
 
-	testObj2.SetDefaultSprite(mysteryMan1);
 	testObj2.SetActiveAnimation(mysteryManIdle);
 
 	while (!glfwWindowShouldClose(window))

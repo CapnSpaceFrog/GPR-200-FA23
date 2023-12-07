@@ -18,11 +18,11 @@ namespace GizmosLib
 
 				void UpdateTexPath(const char* filePath);
 
-				void UpdateWrapMode(GLenum wrapMode);
+				void ChangeWrapMode(GLenum wrapMode);
 
-				void UpdateMinFilter(GLenum minFilter);
+				void ChangeMinFilter(GLenum minFilter);
 
-				void UpdateMagFilter(GLenum magFilter);
+				void ChangeMagFilter(GLenum magFilter);
 
 				unsigned int TextureID;
 				int Width, Height;

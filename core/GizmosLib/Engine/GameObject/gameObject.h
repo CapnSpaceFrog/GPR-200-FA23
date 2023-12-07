@@ -2,17 +2,17 @@
 #define _GAMEOBJECT_
 
 #include <GizmosLib/Transforms/Object/transforms.h>
-#include <GizmosLib/Animation/Animation.h>
+#include <GizmosLib/Engine/Animation/animation.h>
 #include "GizmosLib/OpenGL/Core/Sprites/sprite.h"
+#include <GizmosLib/OpenGL/Core/Mesh/mesh.h>
 #include <ew/ewMath/vec2.h>
 
-using namespace GizmosLib::Math;
 using namespace GizmosLib::Transforms;
 using namespace GizmosLib::OpenGL::Core;
 
 namespace GizmosLib
 {
-	namespace OpenGL
+	namespace Engine
 	{
 		namespace Core
 		{
@@ -39,6 +39,7 @@ namespace GizmosLib
 				
 				void LoadSpriteUV(const std::vector<ew::Vec2>& uv);
 				
+				Mesh* _mesh;
 				Sprite* _defaultSprite;
 
 				Animation* _activeAnimation;

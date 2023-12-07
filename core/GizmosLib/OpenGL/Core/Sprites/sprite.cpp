@@ -2,7 +2,6 @@
 
 #include "GizmosLib/OpenGL/Core/Sprites/sprite.h"
 #include "GizmosLib/OpenGL/Core/Shaders/shaderProgram.h"
-#include <external/glad.h>
 #include <ew/ewMath/ewMath.h>
 #include <ew/mesh.h>
 
@@ -15,16 +14,16 @@ Sprite::Sprite(Texture& tex, ew::Vec2 sourceXY, int pixels)
 	_pixels = pixels;
 
 	ew::Vec2 bottomLeft;
-	bottomLeft = ew::Vec2(spriteSheetCorner.x / texDimensions.x, (spriteSheetCorner.y / texDimensions.y));
+	bottomLeft = ew::Vec2(sourceXY.x / tex.Width, (sourceXY.y / tex.Height));
 
 	ew::Vec2 bottomRight;
-	bottomRight = ew::Vec2(((spriteSheetCorner.x + pixels) / texDimensions.x), (spriteSheetCorner.y / texDimensions.y));
+	bottomRight = ew::Vec2(((sourceXY.x + pixels) / tex.Width), (sourceXY.y / tex.Height));
 
 	ew::Vec2 topLeft;
-	topLeft = ew::Vec2((spriteSheetCorner.x / texDimensions.x), ((spriteSheetCorner.y + pixels) / texDimensions.y));
+	topLeft = ew::Vec2((sourceXY.x / tex.Width), ((sourceXY.y + pixels) / tex.Height));
 
 	ew::Vec2 topRight;
-	topRight = ew::Vec2(((spriteSheetCorner.x + pixels) / texDimensions.x), ((spriteSheetCorner.y + pixels) / texDimensions.y));
+	topRight = ew::Vec2(((sourceXY.x + pixels) / tex.Width), ((sourceXY.y + pixels) / tex.Height));
 
 	UV = { bottomLeft, bottomRight, topLeft, topRight };
 }
@@ -34,12 +33,13 @@ void Sprite::SetBoundTex(Texture& newTex)
 	_tex = &newTex;
 }
 
-Texture& Sprite::GetBoundTex()
+Texture* Sprite::GetBoundTex()
 {
-	return _tex;
+	return &_tex;
 }
 
-bool Sprite::Render()
+bool Sprite::Render(std::vector<Vertex> verts)
 {
 	//Call SpriteBatcher.Add()
+	
 }

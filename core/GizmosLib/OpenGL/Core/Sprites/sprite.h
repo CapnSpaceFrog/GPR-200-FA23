@@ -2,6 +2,7 @@
 #define _SPRITE_
 
 #include <GizmosLib/OpenGL/Core/Texture/texture.h>
+#include <GizmosLib/OpenGL/Core/Mesh/mesh.h>
 #include <ew/ewMath/ewMath.h>
 #include <vector>
 
@@ -19,25 +20,18 @@ namespace GizmosLib
 
 				Sprite(Texture& tex, ew::Vec2 sourceXY, int pixels);
 
-				void SetBoundTex(unsigned int texID);
+				void SetBoundTex(Texture& tex);
 
-				unsigned int GetBoundTex();
+				Texture* GetBoundTex();
 
-				bool Render();
-
-				std::vector<ew::Vec2> UV;
+				bool Render(std::vector<Vertex> verts);
 
 			private:
 				Texture* _tex;
 				ew::Vec2 _sourceXY;
 				int _pixels;
-			};
 
-			struct SpriteData
-			{
-				ew::Vec3 VertPos;
-				ew::Vec2 spriteTexCorner;
-				ew::Vec2 texSize;
+				std::vector<ew::Vec2> UV;
 			};
 		}
 	}

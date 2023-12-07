@@ -19,7 +19,7 @@ Animation::Animation(Sprite sprites[], int size, int fps, float length, bool loo
 	IsPlaying = false;
 }
 
-Sprite* Animation::Update()
+void Animation::Update()
 {
 	if (!IsPlaying)
 	{
@@ -34,15 +34,13 @@ Sprite* Animation::Update()
 	if (timeElapsed > _length && _loop)
 	{
 		Reset();
-		return &_sprites[0];
+		return;
 	}
 
 	float spriteFlipTime = timeElapsed - (_timePerSprite * _currentSpriteIndex);
 
 	if (spriteFlipTime > _timePerSprite && _currentSpriteIndex < (_sprites.size() - 1) )
 		_currentSpriteIndex++;
-
-	return &_sprites[_currentSpriteIndex];
 }
 
 void Animation::Reset()

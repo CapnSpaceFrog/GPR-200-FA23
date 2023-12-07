@@ -1,6 +1,9 @@
 #ifndef  _SPRITE_BATCHER_
 #define _SPRITE_BATCHER_
 
+#include <vector>
+#include <ew/mesh.h>
+
 namespace GizmosLib
 {
 	namespace OpenGL

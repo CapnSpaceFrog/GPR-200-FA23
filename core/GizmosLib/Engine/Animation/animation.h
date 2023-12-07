@@ -15,7 +15,7 @@ namespace GizmosLib
 			public:
 				Animation(Sprite sprites[], int size, int fps, float length, bool loop);
 
-				void Update(float dt);
+				void Update();
 
 				void Reset();
 

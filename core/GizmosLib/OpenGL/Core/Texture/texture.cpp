@@ -1,7 +1,6 @@
 #include <external/stb_image.h>
-#include "texture.h"
-
 #include <external/glad.h>
+#include "texture.h"
 
 using namespace GizmosLib::OpenGL::Core;
 
@@ -15,26 +14,32 @@ void Texture::UpdateTexPath(const char* filePath)
 	loadTexture(filePath, _minFilterMode, _magFilterMode, _wrapMode);
 }
 
-void Texture::UpdateWrapMode(GLenum wrapMode)
+void Texture::ChangeWrapMode(GLenum wrapMode)
 {
 	_wrapMode = wrapMode;
 
+	glBindTexture(GL_TEXTURE_2D, TextureID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::UpdateMinFilter(GLenum minFilter)
+void Texture::ChangeMinFilter(GLenum minFilter)
 {
 	_minFilterMode = minFilter;
 
+	glBindTexture(GL_TEXTURE_2D, TextureID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::UpdateMagFilter(GLenum magFilter)
+void Texture::ChangeMagFilter(GLenum magFilter)
 {
 	_magFilterMode = magFilter;
 
+	glBindTexture(GL_TEXTURE_2D, TextureID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 bool Texture::loadTexture(const char* filePath, GLenum minFilterMode, GLenum magFilterMode, GLenum wrapMode)
