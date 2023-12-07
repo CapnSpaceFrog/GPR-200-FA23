@@ -1,7 +1,7 @@
 #ifndef  _TIME_
 #define _TIME_
 
-namespace GizmosLIb
+namespace GizmosLib
 {
 	namespace Engine
 	{

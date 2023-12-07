@@ -1,7 +1,7 @@
 //This Sprite class is a spin on mesh.h from Eric Winebrenner
 
 #include "GizmosLib/OpenGL/Core/Sprites/sprite.h"
-#include "GizmosLib/OpenGL/Core/Shaders/shaderProgram.h"
+#include <GizmosLib/OpenGL/SpriteBatcher/spriteBatcher.h>
 #include <ew/ewMath/ewMath.h>
 #include <ew/mesh.h>
 
@@ -33,13 +33,14 @@ void Sprite::SetBoundTex(Texture& newTex)
 	_tex = &newTex;
 }
 
-Texture* Sprite::GetBoundTex()
+Texture& Sprite::GetBoundTex()
 {
-	return &_tex;
+	return *_tex;
 }
 
-bool Sprite::Render(std::vector<Vertex> verts)
+bool Sprite::Render(Mesh& mesh)
 {
 	//Call SpriteBatcher.Add()
-	
+	SpriteBatcher::GetInstance().Add();
+	return false;
 }

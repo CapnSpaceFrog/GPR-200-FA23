@@ -1,22 +1,31 @@
 #include <external/glad.h>
 
 #include "spriteBatcher.h"
+#include <GizmosLib/OpenGL/Core/Sprites/sprite.h>
 #include <ew/mesh.h>
 
 using namespace GizmosLib::OpenGL::Core;
 
 SpriteBatcher::SpriteBatcher()
 {
-	if (Instance == nullptr)
-	{
-		Instance = new SpriteBatcher();
-		Instance->initialize();
-	}
+	
 }
 
-void SpriteBatcher::Add()
+SpriteBatcher& SpriteBatcher::GetInstance()
 {
+	if (instance == nullptr)
+	{
+		instance = new SpriteBatcher();
+		instance->initialize();
+	}
 
+	return *instance;
+}
+
+void SpriteBatcher::Add(Sprite& spriteToAdd)
+{
+	//Add the sprite and its associated data to the vertices/indicies vector of the spritebatch
+	//Will need to care for the different types of textures we'll be drawing with, perhaps we should have an array of textures as a uniform that we index into
 }
 
 void SpriteBatcher::DrawBatch()
@@ -63,6 +72,10 @@ void SpriteBatcher::DrawBatch()
 
 	if (indices.size() > 0)
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW);
+
+	/*_attachedShader->MakeActive();
+	_attachedShader->SetUniform1i("uSpriteSheet", 0);
+	_attachedShader->SetUniformMatrix("_Model", Transform.GetModelMatrix());*/
 }
 
 void SpriteBatcher::initialize()
@@ -95,4 +108,10 @@ void SpriteBatcher::initialize()
 void SpriteBatcher::clear()
 {
 	//Clear all VBO data attached to it
+}
+
+SpriteBatcher::~SpriteBatcher()
+{
+	delete instance;
+	instance = nullptr;
 }

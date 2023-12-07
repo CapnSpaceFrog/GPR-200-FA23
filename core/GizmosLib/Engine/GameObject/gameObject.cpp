@@ -1,7 +1,7 @@
-#include <GizmosLib/Engine/GameObject/gameObject.h>
+#include "gameObject.h"
 #include "GizmosLib/OpenGL/Core/Sprites/sprite.h"
 
-using namespace GizmosLib::OpenGL::Core;
+using namespace GizmosLib::Engine::Core;
 
 GameObject::GameObject()
 {
@@ -11,11 +11,12 @@ GameObject::GameObject()
 	
 }
 
-GameObject::GameObject(Sprite& sprite, Animation& animation)
+GameObject::GameObject(Sprite& sprite, Animation& animation, Mesh& mesh)
 {
 	_defaultSprite = &sprite;
 	Transform = GizmosLib::Transforms::Transform();
 	_activeAnimation = &animation;
+	_mesh = &mesh;
 }
 
 void GameObject::SetDefaultSprite(Sprite& sprite)
@@ -37,22 +38,10 @@ bool GameObject::Render()
 	}
 
 	if (_activeAnimation == nullptr)
-		_defaultSprite->Render(_mesh.);
+		_defaultSprite->Render(*_mesh);
 	else
 	{
 		_activeAnimation->Update();
-	}
-
-	if (_attachedShader == nullptr)
-	{
-		//TODO: Logging
-		return false;
-	}
-	else
-	{
-		_attachedShader->MakeActive();
-		_attachedShader->SetUniform1i("uSpriteSheet", 0);
-		_attachedShader->SetUniformMatrix("_Model", Transform.GetModelMatrix());
 	}
 
 	return true;
@@ -61,5 +50,5 @@ bool GameObject::Render()
 GameObject::~GameObject()
 {
 	_defaultSprite = nullptr;
-	_attachedShader = nullptr;
+	_activeAnimation = nullptr;
 }

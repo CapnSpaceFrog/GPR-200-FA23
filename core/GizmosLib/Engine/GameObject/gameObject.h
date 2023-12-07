@@ -19,10 +19,9 @@ namespace GizmosLib
 			class GameObject
 			{
 			public:
-
 				GameObject();
 
-				GameObject(Sprite& sprite, Animation& animation);
+				GameObject(Sprite& sprite, Animation& animation, Mesh& mesh);
 
 				void SetDefaultSprite(Sprite& sprite);
 

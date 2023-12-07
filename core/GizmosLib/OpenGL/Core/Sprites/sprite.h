@@ -22,9 +22,9 @@ namespace GizmosLib
 
 				void SetBoundTex(Texture& tex);
 
-				Texture* GetBoundTex();
+				Texture& GetBoundTex();
 
-				bool Render(std::vector<Vertex> verts);
+				bool Render(Mesh& mesh);
 
 			private:
 				Texture* _tex;

@@ -13,21 +13,19 @@ namespace GizmosLib
 			class SpriteBatcher
 			{
 			public:
-				static SpriteBatcher* Instance;
-
 				SpriteBatcher();
+
+				static SpriteBatcher& GetInstance();
 
 				void Add();
 
 				void DrawBatch();
 
-				~SpriteBatcher()
-				{
-					delete Instance;
-					Instance = nullptr;
-				}
+				~SpriteBatcher();
 
 			private:
+				static SpriteBatcher* instance;
+				
 				void initialize();
 
 				void clear();
