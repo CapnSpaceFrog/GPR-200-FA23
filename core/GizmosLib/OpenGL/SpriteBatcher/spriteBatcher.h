@@ -11,6 +11,12 @@ namespace GizmosLib
 	{
 		namespace Core
 		{
+			struct BatchedSprite
+			{
+				Sprite* sprite;
+				ew::Mat4 model;
+			};
+
 			class SpriteBatcher
 			{
 			public:
@@ -18,7 +24,7 @@ namespace GizmosLib
 
 				static SpriteBatcher& GetInstance();
 
-				void Add(Sprite& spriteToAdd);
+				void Add(BatchedSprite& spriteToAdd);
 
 				void DrawBatch();
 
@@ -31,11 +37,7 @@ namespace GizmosLib
 				unsigned int _VBO;
 				unsigned int _EBO;
 
-				std::vector<Vertex> _batchVertices;
-				std::vector<unsigned int> _batchIndices;
-
-				int _numOfVerts;
-				int _numOfIndices;
+				std::vector<BatchedSprite> _batchedSprites;
 
 				unsigned int _batchTexID;
 			};

@@ -36,14 +36,13 @@ bool GameObject::Render()
 		return false;
 	}
 
-	_defaultSprite->Render();
-
-	/*if (_activeAnimation == nullptr)
-		_defaultSprite->Render();
+	if (_activeAnimation == nullptr)
+		_defaultSprite->Render(Transform);
 	else
 	{
 		_activeAnimation->Update();
-	}*/
+		_activeAnimation->GetCurrentSprite().Render(Transform);
+	}
 
 	return true;
 }

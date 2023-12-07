@@ -56,7 +56,6 @@ void Animation::Update()
 	{
 		_currentSpriteIndex++;
 		_currentSprite = _sprites[_currentSpriteIndex];
-		_currentSprite->Render();
 	}
 	
 	_timeLastFrame = 0;

@@ -92,25 +92,35 @@ int main()
 	};
 	Animation elementalPriestIdle = Animation(priestSprites, 4, 12, 3.2f, true);
 
-	Sprite* testSprite = new Sprite(*SteampunkSpriteSheet, ew::Vec2(0, 96), 32);
-
+	Sprite* mysterManDefault = new Sprite(*SteampunkSpriteSheet, ew::Vec2(0, 96), 32);
 	Sprite* mysteryManSprites[] = {
-		testSprite,
+		mysterManDefault,
 		new Sprite(*SteampunkSpriteSheet, ew::Vec2(32, 96), 32),
 		new Sprite(*SteampunkSpriteSheet, ew::Vec2(64, 96), 32),
 		new Sprite(*SteampunkSpriteSheet, ew::Vec2(96, 96), 32),
 	};
 	Animation mysteryManIdle = Animation(mysteryManSprites, 4, 12, 5.0f, true);
-	
-	
 
+	Sprite* bartenderDefault = new Sprite(*SteampunkSpriteSheet, ew::Vec2(0, 64), 32);
+	Sprite* bartenderSprites[] = {
+		bartenderDefault,
+		new Sprite(*SteampunkSpriteSheet, ew::Vec2(32, 64), 32),
+		new Sprite(*SteampunkSpriteSheet, ew::Vec2(64, 64), 32),
+		new Sprite(*SteampunkSpriteSheet, ew::Vec2(96, 64), 32),
+	};
+	Animation bartenderIdle = Animation(bartenderSprites, 4, 12, 5.0f, true);
+	
 	GameObject testObj = GameObject();
+	testObj.Transform.Position = ew::Vec3(-2, 0, 0);
+
 	GameObject testObj2 = GameObject();
+	testObj2.Transform.Position = ew::Vec3(2, 0, 0);
 
-	testObj.SetActiveAnimation(elementalPriestIdle);
-	testObj.SetDefaultSprite(*testSprite);
+	testObj.SetActiveAnimation(mysteryManIdle);
+	testObj.SetDefaultSprite(*mysterManDefault);
 
-	testObj2.SetActiveAnimation(mysteryManIdle);
+	testObj2.SetDefaultSprite(*bartenderDefault);
+	testObj2.SetActiveAnimation(bartenderIdle);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -125,8 +135,6 @@ int main()
 
 		defaultUnlit.MakeActive();
 
-		defaultUnlit.SetUniformMatrix("_Model", testObj.Transform.GetModelMatrix());
-
 		defaultUnlit.SetUniformMatrix("_OrthoProjection", Orthographic(AppSettings.OrthoHeight,
 			((float)GizmosLib::OpenGL::Utility::SCREEN_WIDTH / (float)GizmosLib::OpenGL::Utility::SCREEN_HEIGHT),
 			AppSettings.NearPlane,
@@ -137,6 +145,7 @@ int main()
 		defaultUnlit.SetUniform1i("uSpriteSheet", 0);
 
 		testObj.Render();
+		testObj2.Render();
 
 		SpriteBatcher::GetInstance().DrawBatch();
 

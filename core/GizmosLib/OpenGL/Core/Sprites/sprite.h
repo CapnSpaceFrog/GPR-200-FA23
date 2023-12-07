@@ -2,11 +2,13 @@
 #define _SPRITE_
 
 #include <GizmosLib/OpenGL/Core/Texture/texture.h>
+#include <GizmosLib/Transforms/Object/transforms.h>
 #include <GizmosLib/OpenGL/Core/Mesh/mesh.h>
 #include <ew/ewMath/ewMath.h>
 #include <vector>
 
 using namespace GizmosLib::OpenGL::Core;
+using namespace GizmosLib::Transforms;
 
 namespace GizmosLib
 {
@@ -24,7 +26,7 @@ namespace GizmosLib
 
 				Texture& GetBoundTex();
 
-				bool Render();
+				bool Render(Transform& transform);
 
 				Mesh BoundMesh;
 			private:

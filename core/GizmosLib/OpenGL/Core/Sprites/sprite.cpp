@@ -2,9 +2,11 @@
 
 #include "GizmosLib/OpenGL/Core/Sprites/sprite.h"
 #include <GizmosLib/OpenGL/SpriteBatcher/spriteBatcher.h>
+#include <GizmosLib/Transforms/Object/transforms.h>
 #include <ew/ewMath/ewMath.h>
 
 using namespace GizmosLib::OpenGL::Core;
+using namespace GizmosLib::Transforms;
 
 Sprite::Sprite(Texture& tex, ew::Vec2 sourceXY, int pixels)
 	: _tex(&tex), _sourceXY(sourceXY), _pixels(pixels)
@@ -39,11 +41,16 @@ Texture& Sprite::GetBoundTex()
 	return *_tex;
 }
 
-bool Sprite::Render()
+bool Sprite::Render(Transform& transform)
 {
 	//Package together the mesh data with the SpriteData,
 	//and then send the SpriteData to the SpriteBatcher
 
-	SpriteBatcher::GetInstance().Add(*this);
+	BatchedSprite newSprite;
+
+	newSprite.sprite = this;
+	newSprite.model = transform.GetModelMatrix();
+
+	SpriteBatcher::GetInstance().Add(newSprite);
 	return true;
 }
