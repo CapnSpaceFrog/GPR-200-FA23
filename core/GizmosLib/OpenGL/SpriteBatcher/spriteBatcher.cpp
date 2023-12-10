@@ -36,6 +36,22 @@ void SpriteBatcher::initialize()
 	//UV attribute
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(offsetof(Vertex, Normal)));
 	glEnableVertexAttribArray(2);
+
+	//Generate default mesh
+	Vertex bottomLeft;
+	bottomLeft.Position = ew::Vec3(-1, -1, 0);
+
+	Vertex bottomRight;
+	bottomRight.Position = ew::Vec3(1, -1, 0);
+
+	Vertex topLeft;
+	topLeft.Position = ew::Vec3(-1, 1, 0);
+
+	Vertex topRight;
+	topRight.Position = ew::Vec3(1, 1, 0);
+
+	DefaultSpriteMesh.Vertices = { bottomLeft, bottomRight, topLeft, topRight };
+	DefaultSpriteMesh.Indices = { 0, 1, 2, 2, 1, 3 };
 }
 
 SpriteBatcher& SpriteBatcher::GetInstance()
@@ -58,24 +74,28 @@ void SpriteBatcher::DrawBatch()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
 
 	//This is a placeholder solution for knowing which texture this batcher is bound too
-	_batchTexID = _batchedSprites[0].sprite->GetBoundTex().TextureID;
+	_batchTexID = _batchedSprites[0].Sprite->GetBoundTex().TextureID;
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
 	for (int i = 0; i < _batchedSprites.size(); i++)
 	{
-		for (Vertex v : _batchedSprites[i].sprite->BoundMesh.Vertices)
+		int uvIndex = 0;
+
+		for (Vertex v : DefaultSpriteMesh.Vertices)
 		{
-			Vertex adjustedVert = v;
-			ew::Vec4 worldPos = _batchedSprites[i].model * ew::Vec4(adjustedVert.Position, 1.0f);
-			ew::Vec3 lmao = ew::Vec3(worldPos.x, worldPos.y, worldPos.z);
-			adjustedVert.Position = lmao;
-			vertices.push_back(adjustedVert);
+			Vertex newVertex = v;
+			ew::Vec4 worldPosV4 = _batchedSprites[i].ModelMatrix * ew::Vec4(newVertex.Position, 1.0f);
+			ew::Vec3 worldPosV3 = ew::Vec3(worldPosV4.x, worldPosV4.y, worldPosV4.z);
+			newVertex.Position = worldPosV3;
+			newVertex.UV = _batchedSprites[i].Sprite->UV[uvIndex];
+			vertices.push_back(newVertex);
+			uvIndex++;
 		}
 		
-		for (unsigned int index : _batchedSprites[i].sprite->BoundMesh.Indices)
-			indices.push_back(index + (_batchedSprites[i].sprite->BoundMesh.Vertices.size() * i));
+		for (unsigned int index : DefaultSpriteMesh.Indices)
+			indices.push_back(index + (DefaultSpriteMesh.Vertices.size() * i));
 	}
 
 	if (vertices.size() > 0)

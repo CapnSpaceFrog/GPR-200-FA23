@@ -11,24 +11,15 @@ using namespace GizmosLib::Transforms;
 Sprite::Sprite(Texture& tex, ew::Vec2 sourceXY, int pixels)
 	: _tex(&tex), _sourceXY(sourceXY), _pixels(pixels)
 {
-	Vertex bottomLeft;
-	bottomLeft.Position = ew::Vec3(-1, -1, 0);
-	bottomLeft.UV = ew::Vec2(sourceXY.x / tex.Width, (sourceXY.y / tex.Height));
+	ew::Vec2 bottomLeft = ew::Vec2(sourceXY.x / tex.Width, (sourceXY.y / tex.Height));
+	
+	ew::Vec2 bottomRight = ew::Vec2(((sourceXY.x + pixels) / tex.Width), (sourceXY.y / tex.Height));
+	
+	ew::Vec2 topLeft = ew::Vec2((sourceXY.x / tex.Width), ((sourceXY.y + pixels) / tex.Height));
+	
+	ew::Vec2 topRight = ew::Vec2(((sourceXY.x + pixels) / tex.Width), ((sourceXY.y + pixels) / tex.Height));
 
-	Vertex bottomRight;
-	bottomRight.Position = ew::Vec3(1, -1, 0);
-	bottomRight.UV = ew::Vec2(((sourceXY.x + pixels) / tex.Width), (sourceXY.y / tex.Height));
-
-	Vertex topLeft;
-	topLeft.Position = ew::Vec3(-1, 1, 0);
-	topLeft.UV = ew::Vec2((sourceXY.x / tex.Width), ((sourceXY.y + pixels) / tex.Height));
-
-	Vertex topRight;
-	topRight.Position = ew::Vec3(1, 1, 0);
-	topRight.UV = ew::Vec2(((sourceXY.x + pixels) / tex.Width), ((sourceXY.y + pixels) / tex.Height));
-
-	BoundMesh.Vertices = { bottomLeft, bottomRight, topLeft, topRight };
-	BoundMesh.Indices = { 0, 1, 2, 2, 1, 3};
+	UV = { bottomLeft, bottomRight, topLeft, topRight };
 }
 
 void Sprite::SetBoundTex(Texture& newTex)
@@ -48,8 +39,8 @@ bool Sprite::Render(Transform& transform)
 
 	BatchedSprite newSprite;
 
-	newSprite.sprite = this;
-	newSprite.model = transform.GetModelMatrix();
+	newSprite.Sprite = this;
+	newSprite.ModelMatrix = transform.GetModelMatrix();
 
 	SpriteBatcher::GetInstance().Add(newSprite);
 	return true;

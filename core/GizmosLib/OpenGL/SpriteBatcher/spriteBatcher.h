@@ -13,8 +13,8 @@ namespace GizmosLib
 		{
 			struct BatchedSprite
 			{
-				Sprite* sprite;
-				ew::Mat4 model;
+				Sprite* Sprite;
+				ew::Mat4 ModelMatrix;
 			};
 
 			class SpriteBatcher
@@ -40,6 +40,8 @@ namespace GizmosLib
 				std::vector<BatchedSprite> _batchedSprites;
 
 				unsigned int _batchTexID;
+
+				Mesh DefaultSpriteMesh;
 			};
 		}
 	}

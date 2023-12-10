@@ -28,7 +28,7 @@ namespace GizmosLib
 
 				bool Render(Transform& transform);
 
-				Mesh BoundMesh;
+				std::vector<ew::Vec2> UV;
 			private:
 				Texture* _tex;
 				ew::Vec2 _sourceXY;

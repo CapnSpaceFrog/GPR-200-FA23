@@ -16,7 +16,7 @@ Animation::Animation(Sprite* sprites[], int size, int fps, float length, bool lo
 		_sprites.push_back(sprites[i]);
 	}
 
-	_framesPerSprite = (_length * _FPS) ;
+	_framesPerSprite = (_length * _FPS) / size ;
 
 	_isPlaying = false;
 
@@ -45,7 +45,7 @@ void Animation::Update()
 		return;
 
 	//Is the animation finished?
-	if ((_frameCount > (_FPS * _length)) && _loop)
+	if ((_frameCount == (_FPS * _length)) && _loop)
 	{
 		Reset();
 		return;
@@ -54,8 +54,8 @@ void Animation::Update()
 	//Update the sprite if we have cycled through the number of frames per sprite
 	if (_frameCount % _framesPerSprite == 0)
 	{
-		_currentSpriteIndex++;
 		_currentSprite = _sprites[_currentSpriteIndex];
+		_currentSpriteIndex++;
 	}
 	
 	_timeLastFrame = 0;

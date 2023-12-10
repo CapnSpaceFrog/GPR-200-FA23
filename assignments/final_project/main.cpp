@@ -83,15 +83,7 @@ int main()
 	Texture* ElementalSpriteSheet = new Texture("assets/Sprite Sheets/ElementalWarriorsSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT);
 	Texture* SteampunkSpriteSheet = new Texture("assets/Sprite Sheets/SteampunkCharacterSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT);
 
-	//TESTING
-	Sprite* priestSprites[] = {
-		new Sprite(*ElementalSpriteSheet, ew::Vec2(0, 0), 32),
-		new Sprite(*ElementalSpriteSheet, ew::Vec2(32, 0), 32),
-		new Sprite(*ElementalSpriteSheet,ew::Vec2(64, 0), 32),
-		new Sprite(*ElementalSpriteSheet, ew::Vec2(96, 0), 32),
-	};
-	Animation elementalPriestIdle = Animation(priestSprites, 4, 12, 3.2f, true);
-
+	//Create Steampunk Assets
 	Sprite* mysterManDefault = new Sprite(*SteampunkSpriteSheet, ew::Vec2(0, 96), 32);
 	Sprite* mysteryManSprites[] = {
 		mysterManDefault,
@@ -109,6 +101,17 @@ int main()
 		new Sprite(*SteampunkSpriteSheet, ew::Vec2(96, 64), 32),
 	};
 	Animation bartenderIdle = Animation(bartenderSprites, 4, 12, 5.0f, true);
+
+	//Create Elemental Assets
+	Sprite* priestSprites[] = {
+		new Sprite(*ElementalSpriteSheet, ew::Vec2(0, 0), 32),
+		new Sprite(*ElementalSpriteSheet, ew::Vec2(32, 0), 32),
+		new Sprite(*ElementalSpriteSheet,ew::Vec2(64, 0), 32),
+		new Sprite(*ElementalSpriteSheet, ew::Vec2(96, 0), 32),
+	};
+	Animation elementalPriestIdle = Animation(priestSprites, 4, 12, 3.2f, true);
+
+	//Create Medieval Assets
 	
 	GameObject testObj = GameObject();
 	testObj.Transform.Position = ew::Vec3(-2, 0, 0);
@@ -144,10 +147,15 @@ int main()
 
 		defaultUnlit.SetUniform1i("uSpriteSheet", 0);
 
+		//Batch One
 		testObj.Render();
 		testObj2.Render();
 
 		SpriteBatcher::GetInstance().DrawBatch();
+		
+		//Batch Two
+
+		//Batch Three
 
 		//Render UI
 		{
