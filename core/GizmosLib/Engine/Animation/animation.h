@@ -13,9 +13,15 @@ namespace GizmosLib
 			class Animation
 			{
 			public:
+				Animation();
+
 				Animation(Sprite* sprites[], int size, int fps, float length, bool loop);
 
 				void Update();
+
+				void SetLength(float length);
+
+				void SetFPS(int fps);
 
 				Sprite& GetCurrentSprite();
 
@@ -25,18 +31,20 @@ namespace GizmosLib
 				std::vector<Sprite*> _sprites;
 				Sprite* _currentSprite;
 
-				int _FPS;
+				float _framesPerSprite;
 				float _length;
+				float _timeLastFrame;
 
-				int _framesPerSprite;
-				int _frameCount;
+				int _FPS;
+				int _totalFrameCount;
+				int _spriteFrameCount;
 				int _currentSpriteIndex;
+				int _numOfSprites;
 				
 				bool _loop;
 				bool _isPlaying;
 
 				double _secForFrame;
-				float _timeLastFrame;
 			};
 		}
 	}

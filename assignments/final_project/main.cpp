@@ -35,6 +35,20 @@ struct
 	float FarPlane = 10.0f;
 } AppSettings;
 
+struct AnimProps
+{
+	AnimProps() {};
+	AnimProps(std::string name, int fps, float length, Animation* anim)
+		: Name(name), FPS(fps), Length(length), BoundAnim(anim) {};
+
+	Animation* BoundAnim;
+	std::string Name;
+	int FPS;
+	float Length;
+};
+
+AnimProps AnimProperties[4];
+
 int main()
 {
 	printf("Initializing...");
@@ -84,6 +98,7 @@ int main()
 	Texture* SteampunkSpriteSheet = new Texture("assets/Sprite Sheets/SteampunkCharacterSheet.png", GL_NEAREST, GL_NEAREST, GL_REPEAT);
 
 	//Create Steampunk Assets
+	
 	Sprite* mysterManDefault = new Sprite(*SteampunkSpriteSheet, ew::Vec2(0, 96), 32);
 	Sprite* mysteryManSprites[] = {
 		mysterManDefault,
@@ -91,7 +106,8 @@ int main()
 		new Sprite(*SteampunkSpriteSheet, ew::Vec2(64, 96), 32),
 		new Sprite(*SteampunkSpriteSheet, ew::Vec2(96, 96), 32),
 	};
-	Animation mysteryManIdle = Animation(mysteryManSprites, 4, 12, 5.0f, true);
+	Animation* mysteryManIdle = new Animation(mysteryManSprites, 4, 12, 5.0f, true);
+	AnimProperties[0] = AnimProps("Myster Man", 12, 5.0f, mysteryManIdle);
 
 	Sprite* bartenderDefault = new Sprite(*SteampunkSpriteSheet, ew::Vec2(0, 64), 32);
 	Sprite* bartenderSprites[] = {
@@ -100,30 +116,169 @@ int main()
 		new Sprite(*SteampunkSpriteSheet, ew::Vec2(64, 64), 32),
 		new Sprite(*SteampunkSpriteSheet, ew::Vec2(96, 64), 32),
 	};
-	Animation bartenderIdle = Animation(bartenderSprites, 4, 12, 5.0f, true);
+	Animation* bartenderIdle = new Animation(bartenderSprites, 4, 12, 5.0f, true);
+	AnimProperties[1] = AnimProps("Bartender", 12, 5.0f, bartenderIdle);
+	
+	Sprite* shadyGuyDefault = new Sprite(*SteampunkSpriteSheet, ew::Vec2(0, 32), 32);
+	Sprite* shadyGuySprites[] = {
+		shadyGuyDefault,
+		new Sprite(*SteampunkSpriteSheet, ew::Vec2(32, 32), 32),
+		new Sprite(*SteampunkSpriteSheet, ew::Vec2(64, 32), 32),
+		new Sprite(*SteampunkSpriteSheet, ew::Vec2(96, 32), 32),
+	};
+	Animation* shadyGuyIdle = new Animation(shadyGuySprites, 4, 12, 5.0f, true);
+	AnimProperties[2] = AnimProps("Shady Guy", 12, 5.0f, shadyGuyIdle);
+
+	Sprite* suaveDefault = new Sprite(*SteampunkSpriteSheet, ew::Vec2(0, 0), 32);
+	Sprite* suaveSprites[] = {
+		suaveDefault,
+		new Sprite(*SteampunkSpriteSheet, ew::Vec2(32, 0), 32),
+		new Sprite(*SteampunkSpriteSheet, ew::Vec2(64, 0), 32),
+		new Sprite(*SteampunkSpriteSheet, ew::Vec2(96, 0), 32),
+	};
+	Animation* suaveIdle = new Animation(suaveSprites, 4, 12, 5.0f, true);
+	AnimProperties[3] = AnimProps("Suave Guy", 12, 5.0f, suaveIdle);
 
 	//Create Elemental Assets
+	Sprite* wandererDefault = new Sprite(*ElementalSpriteSheet, ew::Vec2(0, 96), 32);
+	Sprite* wandererSprites[] = {
+		wandererDefault,
+		new Sprite(*ElementalSpriteSheet, ew::Vec2(32, 96), 32),
+		new Sprite(*ElementalSpriteSheet,ew::Vec2(64, 96), 32),
+		new Sprite(*ElementalSpriteSheet, ew::Vec2(96, 96), 32),
+	};
+	Animation wandererIdle = Animation(wandererSprites, 4, 12, 3.2f, true);
+
+	Sprite* rougueDefault = new Sprite(*ElementalSpriteSheet, ew::Vec2(0, 64), 32);
+	Sprite* rougueSprites[] = {
+		rougueDefault,
+		new Sprite(*ElementalSpriteSheet, ew::Vec2(32, 64), 32),
+		new Sprite(*ElementalSpriteSheet,ew::Vec2(64, 64), 32),
+		new Sprite(*ElementalSpriteSheet, ew::Vec2(96, 64), 32),
+	};
+	Animation rougueIdle = Animation(rougueSprites, 4, 12, 3.2f, true);
+
+	Sprite* archerDefault = new Sprite(*ElementalSpriteSheet, ew::Vec2(0, 32), 32);
+	Sprite* archerSprites[] = {
+		archerDefault,
+		new Sprite(*ElementalSpriteSheet, ew::Vec2(32, 32), 32),
+		new Sprite(*ElementalSpriteSheet,ew::Vec2(64, 32), 32),
+		new Sprite(*ElementalSpriteSheet, ew::Vec2(96, 32), 32),
+	};
+	Animation archerIdle = Animation(archerSprites, 4, 12, 3.2f, true);
+
+	Sprite* priestDefault = new Sprite(*ElementalSpriteSheet, ew::Vec2(0, 0), 32);
 	Sprite* priestSprites[] = {
-		new Sprite(*ElementalSpriteSheet, ew::Vec2(0, 0), 32),
+		priestDefault,
 		new Sprite(*ElementalSpriteSheet, ew::Vec2(32, 0), 32),
 		new Sprite(*ElementalSpriteSheet,ew::Vec2(64, 0), 32),
 		new Sprite(*ElementalSpriteSheet, ew::Vec2(96, 0), 32),
 	};
-	Animation elementalPriestIdle = Animation(priestSprites, 4, 12, 3.2f, true);
+	Animation priestIdle = Animation(priestSprites, 4, 12, 3.2f, true);
 
 	//Create Medieval Assets
+	Sprite* witchDefault = new Sprite(*MedievalSpriteSheet, ew::Vec2(0, 96), 32);
+	Sprite* witchSprites[] = {
+		witchDefault,
+		new Sprite(*MedievalSpriteSheet, ew::Vec2(32, 96), 32),
+		new Sprite(*MedievalSpriteSheet,ew::Vec2(64, 96), 32),
+		new Sprite(*MedievalSpriteSheet, ew::Vec2(96, 96), 32),
+		new Sprite(*MedievalSpriteSheet, ew::Vec2(128, 96), 32)
+	};
+	Animation witchIdle = Animation(witchSprites, 5, 12, 3.2f, true);
+
+	Sprite* maidenDefault = new Sprite(*MedievalSpriteSheet, ew::Vec2(0, 64), 32);
+	Sprite* maidenSprites[] = {
+		maidenDefault,
+		new Sprite(*MedievalSpriteSheet, ew::Vec2(32, 64), 32),
+		new Sprite(*MedievalSpriteSheet,ew::Vec2(64, 64), 32),
+		new Sprite(*MedievalSpriteSheet, ew::Vec2(96, 64), 32),
+		new Sprite(*MedievalSpriteSheet, ew::Vec2(128, 64), 32),
+	};
+	Animation maidenIdle = Animation(maidenSprites, 5, 12, 3.2f, true);
+
+	Sprite* farmerDefault = new Sprite(*MedievalSpriteSheet, ew::Vec2(0, 32), 32);
+	Sprite* farmerSprites[] = {
+		farmerDefault,
+		new Sprite(*MedievalSpriteSheet, ew::Vec2(32, 32), 32),
+		new Sprite(*MedievalSpriteSheet,ew::Vec2(64, 32), 32),
+		new Sprite(*MedievalSpriteSheet, ew::Vec2(96, 32), 32),
+		new Sprite(*MedievalSpriteSheet, ew::Vec2(128, 32), 32),
+	};
+	Animation farmerIdle = Animation(farmerSprites, 5, 12, 3.2f, true);
+
+	Sprite* merchantDefault = new Sprite(*MedievalSpriteSheet, ew::Vec2(0, 0), 32);
+	Sprite* merchantSprites[] = {
+		merchantDefault,
+		new Sprite(*MedievalSpriteSheet, ew::Vec2(32, 0), 32),
+		new Sprite(*MedievalSpriteSheet,ew::Vec2(64, 0), 32),
+		new Sprite(*MedievalSpriteSheet, ew::Vec2(96, 0), 32),
+		new Sprite(*MedievalSpriteSheet, ew::Vec2(128, 0), 32),
+	};
+	Animation merchantIdle = Animation(merchantSprites, 5, 12, 3.2f, true);
+
+	//Create Steampunk Objects
+	GameObject mysterManObj = GameObject();
+	mysterManObj.Transform.Position = ew::Vec3(-1, 1, 0);
+	mysterManObj.SetDefaultSprite(*mysterManDefault);
+	mysterManObj.SetActiveAnimation(*mysteryManIdle);
+
+	GameObject bartenderObj = GameObject();
+	bartenderObj.Transform.Position = ew::Vec3(1, 1, 0);
+	bartenderObj.SetDefaultSprite(*bartenderDefault);
+	bartenderObj.SetActiveAnimation(*bartenderIdle);
+
+	GameObject shadyGuyObj = GameObject();
+	shadyGuyObj.Transform.Position = ew::Vec3(1, -1, 0);
+	shadyGuyObj.SetDefaultSprite(*shadyGuyDefault);
+	shadyGuyObj.SetActiveAnimation(*shadyGuyIdle);
+
+	GameObject suaveGuyObj = GameObject();
+	suaveGuyObj.Transform.Position = ew::Vec3(-1, -1, 0);
+	suaveGuyObj.SetDefaultSprite(*suaveDefault);
+	suaveGuyObj.SetActiveAnimation(*suaveIdle);
+
+	//Create Elemental Objects
+	GameObject wandererObj = GameObject();
+	wandererObj.Transform.Position = ew::Vec3(7, 1, 0);
+	wandererObj.SetDefaultSprite(*wandererDefault);
+	wandererObj.SetActiveAnimation(wandererIdle);
+
+	GameObject rougueObj = GameObject();
+	rougueObj.Transform.Position = ew::Vec3(5, 1, 0);
+	rougueObj.SetDefaultSprite(*rougueDefault);
+	rougueObj.SetActiveAnimation(rougueIdle);
+
+	GameObject archerObj = GameObject();
+	archerObj.Transform.Position = ew::Vec3(5, -1, 0);
+	archerObj.SetDefaultSprite(*archerDefault);
+	archerObj.SetActiveAnimation(archerIdle);
+
+	GameObject priestObj = GameObject();
+	priestObj.Transform.Position = ew::Vec3(7, -1, 0);
+	priestObj.SetDefaultSprite(*priestDefault);
+	priestObj.SetActiveAnimation(priestIdle);
 	
-	GameObject testObj = GameObject();
-	testObj.Transform.Position = ew::Vec3(-2, 0, 0);
+	//Create Medieval Objects
+	GameObject witchObj = GameObject();
+	witchObj.Transform.Position = ew::Vec3(-7, 1, 0);
+	witchObj.SetDefaultSprite(*witchDefault);
+	witchObj.SetActiveAnimation(witchIdle);
 
-	GameObject testObj2 = GameObject();
-	testObj2.Transform.Position = ew::Vec3(2, 0, 0);
+	GameObject maidenObj = GameObject();
+	maidenObj.Transform.Position = ew::Vec3(-5, 1, 0);
+	maidenObj.SetDefaultSprite(*maidenDefault);
+	maidenObj.SetActiveAnimation(maidenIdle);
 
-	testObj.SetActiveAnimation(mysteryManIdle);
-	testObj.SetDefaultSprite(*mysterManDefault);
+	GameObject farmerObj = GameObject();
+	farmerObj.Transform.Position = ew::Vec3(-5, -1, 0);
+	farmerObj.SetDefaultSprite(*farmerDefault);
+	farmerObj.SetActiveAnimation(farmerIdle);
 
-	testObj2.SetDefaultSprite(*bartenderDefault);
-	testObj2.SetActiveAnimation(bartenderIdle);
+	GameObject merchantObj = GameObject();
+	merchantObj.Transform.Position = ew::Vec3(-7, -1, 0);
+	merchantObj.SetDefaultSprite(*merchantDefault);
+	merchantObj.SetActiveAnimation(merchantIdle);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -147,15 +302,29 @@ int main()
 
 		defaultUnlit.SetUniform1i("uSpriteSheet", 0);
 
-		//Batch One
-		testObj.Render();
-		testObj2.Render();
+		//Steampunk Batch
+		mysterManObj.Render();
+		bartenderObj.Render();
+		shadyGuyObj.Render();
+		suaveGuyObj.Render();
 
 		SpriteBatcher::GetInstance().DrawBatch();
 		
-		//Batch Two
+		//Batch Elemental Batch
+		wandererObj.Render();
+		rougueObj.Render();
+		archerObj.Render();
+		priestObj.Render();
 
-		//Batch Three
+		SpriteBatcher::GetInstance().DrawBatch();
+
+		//Batch Medieval Batch
+		witchObj.Render();
+		maidenObj.Render();
+		farmerObj.Render();
+		merchantObj.Render();
+
+		SpriteBatcher::GetInstance().DrawBatch();
 
 		//Render UI
 		{
@@ -166,12 +335,24 @@ int main()
 			ImGui::Begin("Settings");
 
 			if (ImGui::CollapsingHeader("Camera"))
-			{
 				ImGui::DragFloat("Orthographic Height", &AppSettings.OrthoHeight, 0.1f, 1.0f);
-				ImGui::DragFloat("Near Plane", &AppSettings.NearPlane, 0.1f, 0.1f);
-				ImGui::DragFloat("Far Plane", &AppSettings.FarPlane, 0.1f, 100.0f);
-			}
 
+			for (int i = 0; i < 4; i++)
+			{
+				ImGui::PushID(i);
+				
+				if (ImGui::CollapsingHeader(AnimProperties[i].Name.c_str()))
+				{
+					if (ImGui::DragInt("FPS", &AnimProperties[i].FPS, 1, 1.0f, 60.0f))
+						AnimProperties[i].BoundAnim->SetFPS(AnimProperties[i].FPS);
+
+					if (ImGui::DragFloat("Length", &AnimProperties[i].Length, 0.15f, 1.0f))
+						AnimProperties[i].BoundAnim->SetLength(AnimProperties[i].Length);
+				}
+
+				ImGui::PopID();
+			}
+			
 			ImGui::End();
 			
 			ImGui::Render();
